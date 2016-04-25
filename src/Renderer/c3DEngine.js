@@ -87,8 +87,12 @@ define('Renderer/c3DEngine', [
 
     console.log(decode32(v.toArray()),parseFloat2(0x800000));
     */
+
+THREE.OrbitControls = require('three-orbit-controls')(THREE);
+
     function c3DEngine(scene, positionCamera, debugMode, gLDebug) {
         //Constructor
+        positionCamera = new THREE.Vector3(1842000, 5172000, 800);
 
         if (instance3DEngine !== null) {
             throw new Error("Cannot instantiate more than one c3DEngine");
@@ -196,7 +200,7 @@ define('Renderer/c3DEngine', [
         }.bind(this);
 
         this.scene = scene;
-        this.size = this.scene.size.x;
+        this.size = 64;// this.scene.size.x;
 
         //
         // init camera
@@ -223,6 +227,8 @@ define('Renderer/c3DEngine', [
         this.camera.camera3D.near = Math.max(15.0, 0.000002352 * this.size);
         this.camera.camera3D.updateProjectionMatrix();
 
+        this.camera.camera3D.lookAt(new THREE.Vector3(this.camera.position.x,this.camera.position.y,0));
+
         //
         // Create renderer
         //
@@ -240,7 +246,7 @@ define('Renderer/c3DEngine', [
         //
         // Create Control
         //
-        this.controls = new THREE.GlobeControls(this.camera.camera3D, this.renderer.domElement, this);
+        /*this.controls = new THREE.GlobeControls(this.camera.camera3D, this.renderer.domElement, this);
         this.controls.target = new THREE.Vector3(0, 0, 0);
         this.controls.damping = 0.1;
         this.controls.noPan = false;
@@ -248,7 +254,22 @@ define('Renderer/c3DEngine', [
         this.controls.zoomSpeed = 2.0;
         this.controls.minDistance = 30;
         this.controls.maxDistance = this.size * 8.0;
+        this.controls.keyPanSpeed = 0.01;*/
+
+        var origin = new THREE.Vector3(positionCamera.x, positionCamera.y, 300);
+        this.controls = new THREE.OrbitControls(this.camera.camera3D, this.renderer.domElement);
+
+        this.controls.constraint.target = origin;
+        this.controls.damping = 0.1;
+        this.controls.noPan = false;
+        this.controls.rotateSpeed = 0.8;
+        this.controls.zoomSpeed = 1.0;
+        this.controls.minDistance = 30;
+
+        this.controls.maxDistance = 1000;
+        //this.controls.keyPanSpeed   = 1.0;
         this.controls.keyPanSpeed = 0.01;
+        this.controls.update();
 
         window.addEventListener('resize', this.onWindowResize, false);
         this.controls.addEventListener('change', this.update);

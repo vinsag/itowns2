@@ -10,24 +10,28 @@ define('Renderer/LayeredMaterial', ['THREE',
     'Renderer/c3DEngine',
     'Core/System/JavaTools',
     'Renderer/Shader/GlobeVS.glsl',
-    'Renderer/Shader/GlobeFS.glsl'
+    'Renderer/Shader/GlobeFS.glsl',
+    'Renderer/Shader/PlaneVS.glsl',
+    'Renderer/Shader/PlaneFS.glsl'
 ], function(
     THREE,
     BasicMaterial,
     gfxEngine,
     JavaTools,
     GlobeVS,
-    GlobeFS) {
+    GlobeFS,
+    PlaneVS,
+    PlaneFS) {
 
     var emptyTexture = new THREE.Texture();
     var nbLayer = 2;
 
-    var LayeredMaterial = function(id) {
+    var LayeredMaterial = function(globe, id) {
 
         BasicMaterial.call(this);
 
-        this.vertexShader = GlobeVS;
-        this.fragmentShader = GlobeFS;
+        this.vertexShader = globe ? GlobeVS : PlaneVS;
+        this.fragmentShader = globe ? GlobeFS : PlaneFS;
 
         this.Textures = [];
         this.pitScale = [];
@@ -72,6 +76,14 @@ define('Renderer/LayeredMaterial', ['THREE',
         this.uniforms.lightPosition = {
             type: "v3",
             value: new THREE.Vector3(-0.5, 0.0, 1.0)
+        };
+        this.uniforms.minHeight = {
+            type: "f",
+            value: 148.0
+        };
+        this.uniforms.maxHeight = {
+            type: "f",
+            value: 622.0
         };
 
         this.setUuid(id || 0);

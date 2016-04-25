@@ -25,6 +25,7 @@ define('Core/Commander/Providers/TileProvider', [
         'Core/Geographic/CoordWMTS',
         'Core/Math/Ellipsoid',
         'Globe/BuilderEllipsoidTile',
+        'Plane/PlanarTileGeometry',
         'Core/defaultValue',
         'Scene/BoundingBox'
     ],
@@ -38,19 +39,22 @@ define('Core/Commander/Providers/TileProvider', [
         CoordWMTS,
         Ellipsoid,
         BuilderEllipsoidTile,
+        PlanarTileGeometry,
         defaultValue,
         BoundingBox
     ) {
 
-        function TileProvider(size,gLDebug) {
+        function TileProvider(parameters) {
             //Constructor
-
+            var gLDebug = defaultValue(parameters.gLDebug, false);
             this.projection = new Projection();
             this.providerWMTS = new WMTS_Provider({support : gLDebug});//{url:"http://a.basemaps.cartocdn.com/",layer:"dark_all/"});
             //this.providerWMS     = new WMS_Provider();
-            this.ellipsoid = new Ellipsoid(size);
-            this.providerKML = new KML_Provider(this.ellipsoid);
-            this.builder = new BuilderEllipsoidTile(this.ellipsoid,this.projection);
+            if(parameters.ellipsoid) {
+                this.ellipsoid = parameters.ellipsoid;
+                this.providerKML = new KML_Provider(this.ellipsoid);
+                this.builder = new BuilderEllipsoidTile(this.ellipsoid,this.projection);
+            }
 
 
             this.providerElevationTexture = this.providerWMTS;
@@ -59,6 +63,18 @@ define('Core/Commander/Providers/TileProvider', [
             this.cacheGeometry = [];
             this.tree = null;
             this.nNode = 0;
+
+
+            // tmp
+            this.providerWMS = new WMS_Provider({url:"https://download.data.grandlyon.com/wms/grandlyon",
+                                               layer:"Ortho2009_vue_ensemble_16cm_CC46",
+                                               format:"image/jpeg",
+                                               srs:"EPSG:3946"});
+
+           this.providerWMSElevation = new WMS_Provider({url:"https://download.data.grandlyon.com/wms/grandlyon",
+                                              layer:"MNT2009_Altitude_10m_CC46",
+                                              format:"image/jpeg",
+                                              srs:"EPSG:3946"});
 
         }
 
@@ -118,10 +134,11 @@ define('Core/Commander/Providers/TileProvider', [
                 // build tile
                 var geometry; // = getGeometry(bbox,tileCoord);
 
-                var params = {bbox:bbox,zoom:tileCoord.zoom,segment:16,center:null,projected:null};
+                var params = {bbox:bbox,zoom:tileCoord.zoom,segment:16,center:null,projected:null,globe:false};
 
 
-                tile.setGeometry(new TileGeometry(params, this.builder));   //TODO: use cache?
+                //tile.setGeometry(new TileGeometry(params, this.builder));   //TODO: use cache?
+                tile.setGeometry(new PlanarTileGeometry(params));
                 // set material too ?
 
                 tile.tileCoord = tileCoord;
@@ -146,17 +163,31 @@ define('Core/Commander/Providers/TileProvider', [
                 return when();
             } else if(command.type === "elevation") {
                 // TODO: remove hard-written values
-                var elevationlayerId = tile.tileCoord.zoom > 11 ? 'IGN_MNT_HIGHRES' : 'IGN_MNT';
+                /*var elevationlayerId = tile.tileCoord.zoom > 11 ? 'IGN_MNT_HIGHRES' : 'IGN_MNT';
                 return this.providerElevationTexture.getElevationTexture(tile.tileCoord, elevationlayerId).then(function(terrain) {
                     if(this.disposed) return;
                     this.setTextureElevation(terrain);
+                }.bind(tile));*/
+                return this.providerWMSElevation.getTexture(tile.bbox).then(function(terrain) {
+                    if(this.disposed) return;
+                    terrain.level = this.tileCoord.zoom;
+                    this.setTextureElevation({texture: terrain, min: 0, max: 10000});
                 }.bind(tile));
+                //tile.updateElevation = false;
+                //return when();
 
             } else if(command.type === "imagery") {
-                return this.providerWMTS.getColorTextures(tile,"IGNPO").then(function(result)
+                /*return this.providerWMTS.getColorTextures(tile,"IGNPO").then(function(result)
                 {
                     if(this.disposed) return;
                     this.setTexturesLayer(result,1);
+                }.bind(tile));*/
+                return this.providerWMS.getTexture(tile.bbox).then(function(result)
+                {
+                    if(this.disposed) return;
+                    result.level = this.tileCoord.zoom;
+                    result = {texture: result, pitch: {x:0,y:0,z:1}};
+                    this.setTexturesLayer([result],1);
                 }.bind(tile));
             }
         };

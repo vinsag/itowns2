@@ -15,6 +15,7 @@
 define('Scene/Scene', [
     'Renderer/c3DEngine',
     'Globe/Globe',
+    'Plane/Plane',
     'Core/Commander/ManagerCommands',
     'Core/Commander/Providers/TileProvider',
     'Core/Commander/Providers/PanoramicProvider',
@@ -28,7 +29,7 @@ define('Scene/Scene', [
     'Core/System/Capabilities',
     'MobileMapping/MobileMappingLayer'
 
-], function(c3DEngine, Globe, ManagerCommands, TileProvider,
+], function(c3DEngine, Globe, Plane, ManagerCommands, TileProvider,
             PanoramicProvider, Ellipsoid, PanoramicMesh, BrowseTree, NodeProcess, Quadtree, Layer, CoordCarto,
             Capabilities, MobileMappingLayer) {
 
@@ -184,10 +185,10 @@ define('Scene/Scene', [
      */
     Scene.prototype.add = function(node, nodeProcess) {
 
-        if(node instanceof Globe)
+        if(node instanceof Globe || node instanceof Plane)
         {
             this.map = node;
-            this.managerCommand.addMapProvider(node);
+            //this.managerCommand.addMapProvider(node);
             nodeProcess = nodeProcess || new NodeProcess(this.currentCamera(), node.size);
             //this.quadTreeRequest(node.tiles, nodeProcess);
 

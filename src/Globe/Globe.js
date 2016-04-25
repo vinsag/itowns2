@@ -43,7 +43,7 @@ define('Globe/Globe', [
 
         kml.visible = false;
 
-        this.tiles = new Quadtree(TileMesh, this.SchemeTileWMTS(2), this.size, kml);
+        this.tiles = new Quadtree(TileMesh, this.SchemeTileWMTS(2), kml);
 
         // PROBLEM is not generic : elevationTerrain ,colorTerrain
         this.elevationTerrain = new Layer();

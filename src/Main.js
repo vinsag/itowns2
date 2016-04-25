@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(['Core/Commander/Interfaces/ApiInterface/ApiGlobe'],
+define(['Core/Commander/Interfaces/ApiInterface/ApiPlane'],
     function(ApiGlobe) {
         // browser execution or not ?
         var scope = typeof window !== "undefined" ? window : {};

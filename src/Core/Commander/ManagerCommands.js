@@ -13,15 +13,11 @@
  */
 define('Core/Commander/ManagerCommands', [
         'Core/Commander/Interfaces/EventsManager',
-        'Globe/Globe',
-        'Core/Commander/Providers/TileProvider',
         'PriorityQueue',
         'when'
     ],
     function(
         EventsManager,
-        Globe,
-        TileProvider,
         PriorityQueue,
         when
     ) {
@@ -63,12 +59,12 @@ define('Core/Commander/ManagerCommands', [
             this.providerMap[layer.id] = provider;
         };
 
-        ManagerCommands.prototype.addMapProvider = function(map) {
+        /*ManagerCommands.prototype.addMapProvider = function(map) {
 
             var tileProvider = new TileProvider(map.size,map.gLDebug);
             this.addLayer(map.tiles,tileProvider);
 
-        };
+        };*/
 
         ManagerCommands.prototype.getProvider = function(layer) {
             return this.providerMap[layer.id];

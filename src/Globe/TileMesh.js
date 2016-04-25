@@ -43,7 +43,7 @@ define('Globe/TileMesh', [
         this.bbox = defaultValue(params.bbox, new BoundingBox());
 
         this.texturesNeeded = 0;
-        this.material = new LayeredMaterial();
+        this.material = new LayeredMaterial(params.globe);
         this.frustumCulled = false;
         this.levelElevation = this.level;
         this.updateElevation = true;
