@@ -29,7 +29,6 @@ uniform float       minHeight;
 uniform float       maxHeight;
 
 varying vec2        vUv_0;
-varying float       vUv_1;
 varying vec3        vNormal;
 varying vec4        pos;
 
@@ -43,8 +42,7 @@ highp float decode32(highp vec4 rgba) {
 
 void main() {
 
-        vUv_0    = uv;
-        vUv_1    = uv1;
+        vUv_0    = vec2(uv.x, 1.0 - uv.y);
 
         vec4 vPosition;
 

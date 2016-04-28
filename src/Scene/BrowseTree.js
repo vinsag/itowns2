@@ -65,7 +65,7 @@ define('Scene/BrowseTree', ['Globe/TileMesh', 'THREE'], function( TileMesh, THRE
     BrowseTree.prototype.processQuadtreeNode = function(node, camera, process, params)
     {
 
-        this.resetQuadtreeNode(node);
+        //this.resetQuadtreeNode(node);
 
         if(node.parent.material.visible)
             return false;

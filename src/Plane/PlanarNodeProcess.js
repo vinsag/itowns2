@@ -52,19 +52,19 @@ define('Scene/PlanarNodeProcess', ['Scene/BoundingBox', 'Renderer/Camera', 'Core
     };
 
     PlanarNodeProcess.prototype.process = function(node, camera, params) {
-        // When entering this function, the node is ALWAYS visible
         var updateType;
         if(node.level === 0) { // first nodes
             this.createCommands(node, params);
 
+            node.setMaterialVisibility(false);
             if(!node.ready()) {
                 node.setVisibility(false);
-                node.setMaterialVisibility(false);
                 return;
+            } else {
+                node.setVisibility(true);
             }
-        }
-        node.setVisibility(true);
-        node.setMaterialVisibility(false);
+        } else if(!node.visible) return;
+
         if(node.noChild()) {
             params.tree.subdivide(node);
             node.setMaterialVisibility(true);
@@ -86,6 +86,8 @@ define('Scene/PlanarNodeProcess', ['Scene/BoundingBox', 'Renderer/Camera', 'Core
                         childrenVisible++;
                         if(child.ready() && this.checkSSE(child, camera)) {
                             childrenReady++;
+                            child.setVisibility(true);
+                            child.setMaterialVisibility(false);
                         }
                     }
                 }
@@ -106,6 +108,8 @@ define('Scene/PlanarNodeProcess', ['Scene/BoundingBox', 'Renderer/Camera', 'Core
     var quaternion = new THREE.Quaternion();
 
     PlanarNodeProcess.prototype.frustumCullingOBB = function(node, camera) {
+        this.camera = new Camera(); // meh.
+        this.camera.camera3D = camera.camera3D.clone();
         //position in local space
         var position = node.OBB().worldToLocal(camera.position().clone());
         //position.z -= node.distance;

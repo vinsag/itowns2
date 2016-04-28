@@ -25,7 +25,7 @@ define('Core/Commander/Providers/TileProvider', [
         'Core/Geographic/CoordWMTS',
         'Core/Math/Ellipsoid',
         'Globe/BuilderEllipsoidTile',
-        'Plane/PlanarTileGeometry',
+        'Plane/PlanarTileBuilder',
         'Core/defaultValue',
         'Scene/BoundingBox'
     ],
@@ -39,7 +39,7 @@ define('Core/Commander/Providers/TileProvider', [
         CoordWMTS,
         Ellipsoid,
         BuilderEllipsoidTile,
-        PlanarTileGeometry,
+        PlanarTileBuilder,
         defaultValue,
         BoundingBox
     ) {
@@ -54,6 +54,8 @@ define('Core/Commander/Providers/TileProvider', [
                 this.ellipsoid = parameters.ellipsoid;
                 this.providerKML = new KML_Provider(this.ellipsoid);
                 this.builder = new BuilderEllipsoidTile(this.ellipsoid,this.projection);
+            } else {
+                this.builder = new PlanarTileBuilder();
             }
 
 
@@ -137,8 +139,7 @@ define('Core/Commander/Providers/TileProvider', [
                 var params = {bbox:bbox,zoom:tileCoord.zoom,segment:16,center:null,projected:null,globe:false};
 
 
-                //tile.setGeometry(new TileGeometry(params, this.builder));   //TODO: use cache?
-                tile.setGeometry(new PlanarTileGeometry(params));
+                tile.setGeometry(new TileGeometry(params, this.builder));   //TODO: use cache?
                 // set material too ?
 
                 tile.tileCoord = tileCoord;

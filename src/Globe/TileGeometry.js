@@ -128,7 +128,8 @@ define('Globe/TileGeometry', [
 
             builder.vProjecte(v,params);
 
-            var uv_1 = builder.getUV_1(params);
+            var uv_1;
+            if(buffersAttrib.uv_1 === null && builder.getUV_1) uv_1 = builder.getUV_1(params);
 
             for (x = 0; x <= widthSegments; x++) {
 

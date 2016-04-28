@@ -207,7 +207,7 @@ THREE.OrbitControls = require('three-orbit-controls')(THREE);
         //
         this.camera.setPosition(positionCamera);
         this.camera.camera3D.near = this.size * 2.333; // if near is too small --> bug no camera helper
-        this.camera.camera3D.far = this.size * 10;
+        this.camera.camera3D.far = this.size * 1000;
         this.camera.camera3D.updateProjectionMatrix();
         this.camera.camera3D.updateMatrixWorld(true);
 
@@ -266,7 +266,7 @@ THREE.OrbitControls = require('three-orbit-controls')(THREE);
         this.controls.zoomSpeed = 1.0;
         this.controls.minDistance = 30;
 
-        this.controls.maxDistance = 1000;
+        this.controls.maxDistance = 30000;
         //this.controls.keyPanSpeed   = 1.0;
         this.controls.keyPanSpeed = 0.01;
         this.controls.update();
