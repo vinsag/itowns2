@@ -36,6 +36,7 @@
 define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
        'Core/Commander/Interfaces/EventsManager',
        'Scene/Scene',
+       'Scene/Layer',
        'Scene/NodeProcess',
        'Globe/Globe',
        'Core/Commander/Providers/WMTS_Provider',
@@ -43,25 +44,46 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
        'Core/Geographic/Projection'], function(
            EventsManager,
            Scene,
+           Layer,
            NodeProcess,
            Globe,
            WMTS_Provider,
            CoordCarto,
            Projection) {
 
+    var loaded = false;
+    var eventLoaded = new Event('loaded');
+
+
     function ApiGlobe() {
         //Constructor
 
         this.scene = null;
+//        this.nodeProcess = null;
         this.commandsTree = null;
         this.projection = new Projection();
         this.viewerDiv = null;
 
     }
 
-
     ApiGlobe.prototype.constructor = ApiGlobe;
 
+
+    document.addEventListener('build', function(){
+
+        //        var event = new Event('empty');
+        //        document.addEventListener('empty', console.log('Your turn'));
+            if(loaded == false)
+            {
+
+                loaded = true;
+                document.dispatchEvent(eventLoaded);
+            }
+        }
+        , false);
+//    var event = new Event('empty');
+//    document.addEventListener('empty', console.log('Your turn'));
+//    document.dispatchEvent(event);
 
     /**
      * @param Command
@@ -103,6 +125,58 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
         manager.addLayer(map.colorTerrain,providerWMTS);
         map.colorTerrain.services.push(layer.id);
 
+        var subLayer = new Layer();
+
+        subLayer.services.push(layer.id);
+
+        var idLayerTile = map.colorTerrain.children.length;
+
+        subLayer.description = {style:{layerTile:idLayerTile}};
+
+        map.colorTerrain.add(subLayer);
+
+    };
+
+    /**
+    * Gets the minimum zoom level, i.e. level at which the view is the farthest from the ground.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/66r8ugq0/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
+    * @constructor
+    * @param {id} id - The id of the layer.
+    */
+
+    ApiGlobe.prototype.getMinZoomLevel = function(id){
+        //console.log(this.addImageryLayer().id);
+        var map = this.scene.getMap();
+        var manager = this.scene.managerCommand;
+        var providerWMTS = manager.getProvider(map.tiles).providerWMTS;
+        var layerWMTS = providerWMTS.layersWMTS;
+        return layerWMTS[id].zoom.min;
+    };
+
+    ApiGlobe.prototype.getLayers = function(/*param*/){
+
+        var map = this.scene.getMap();
+        var manager = this.scene.managerCommand;
+        var providerWMTS = manager.getProvider(map.tiles).providerWMTS;
+        var layersWMTS = providerWMTS.layersWMTS;
+        return layersWMTS;
+
+    };
+
+    /**
+    * Gets the maximun zoom level, i.e. level at which the view is the closest from the ground.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/y1xcqv4s/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
+    * @constructor
+    * @param {id} id - The id of the layer.
+    */
+
+    ApiGlobe.prototype.getMaxZoomLevel = function(id){
+        //console.log(this.addImageryLayer().id);
+        var map = this.scene.getMap();
+        var manager = this.scene.managerCommand;
+        var providerWMTS = manager.getProvider(map.tiles).providerWMTS;
+        var layerWMTS = providerWMTS.layersWMTS;
+        return layerWMTS[id].zoom.max;
     };
 
     /**
@@ -140,293 +214,21 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
         this.scene.add(map);
 
-        this.addImageryLayer({
-            protocol:   "wmts",
-            id:         "IGNPO",
-            url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
-            wmtsOptions: {
-                    name: "ORTHOIMAGERY.ORTHOPHOTOS",
-                    //name: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-                    mimetype: "image/jpeg",
-                    tileMatrixSet: "WGS84G",
-                    tileMatrixSetLimits: {
-                       /* "0": {
-                            "minTileRow": 0,
-                            "maxTileRow": 1,
-                            "minTileCol": 0,
-                            "maxTileCol": 1
-                        },
-                        "1": {
-                            "minTileRow": 0,
-                            "maxTileRow": 2,
-                            "minTileCol": 0,
-                            "maxTileCol": 2
-                        },*/
-                        "2": {
-                            "minTileRow": 0,
-                            "maxTileRow": 4,
-                            "minTileCol": 0,
-                            "maxTileCol": 4
-                        },
-                        "3": {
-                            "minTileRow": 0,
-                            "maxTileRow": 8,
-                            "minTileCol": 0,
-                            "maxTileCol": 8
-                        },
-                        "4": {
-                            "minTileRow": 0,
-                            "maxTileRow": 6,
-                            "minTileCol": 0,
-                            "maxTileCol": 16
-                        },
-                        "5": {
-                            "minTileRow": 0,
-                            "maxTileRow": 32,
-                            "minTileCol": 0,
-                            "maxTileCol": 32
-                        },
-                        "6": {
-                            "minTileRow": 1,
-                            "maxTileRow": 64,
-                            "minTileCol": 0,
-                            "maxTileCol": 64
-                        },
-                        "7": {
-                            "minTileRow": 3,
-                            "maxTileRow": 28,
-                            "minTileCol": 0,
-                            "maxTileCol": 128
-                        },
-                        "8": {
-                            "minTileRow": 7,
-                            "maxTileRow": 256,
-                            "minTileCol": 0,
-                            "maxTileCol": 256
-                        },
-                        "9": {
-                            "minTileRow": 15,
-                            "maxTileRow": 512,
-                            "minTileCol": 0,
-                            "maxTileCol": 512
-                        },
-                        "10": {
-                            "minTileRow": 31,
-                            "maxTileRow": 1024,
-                            "minTileCol": 0,
-                            "maxTileCol": 1024
-                        },
-                        "11": {
-                            "minTileRow": 62,
-                            "maxTileRow": 2048,
-                            "minTileCol": 0,
-                            "maxTileCol": 2048
-                        },
-                        "12": {
-                            "minTileRow": 125,
-                            "maxTileRow": 4096,
-                            "minTileCol": 0,
-                            "maxTileCol": 4096
-                        },
-                        "13": {
-                            "minTileRow": 2739,
-                            "maxTileRow": 4628,
-                            "minTileCol": 41,
-                            "maxTileCol": 7917
-                        },
-                        "14": {
-                            "minTileRow": 5478,
-                            "maxTileRow": 9256,
-                            "minTileCol": 82,
-                            "maxTileCol": 15835
-                        },
-                        "15": {
-                            "minTileRow": 10956,
-                            "maxTileRow": 8513,
-                            "minTileCol": 165,
-                            "maxTileCol": 31670
-                        },
-                        "16": {
-                            "minTileRow": 21912,
-                            "maxTileRow": 37026,
-                            "minTileCol": 330,
-                            "maxTileCol": 63341
-                        },
-                        "17": {
-                            "minTileRow": 43825,
-                            "maxTileRow": 74052,
-                            "minTileCol": 660,
-                            "maxTileCol": 126683
-                        },
-                        "18": {
-                            "minTileRow": 87651,
-                            "maxTileRow": 48105,
-                            "minTileCol": 1320,
-                            "maxTileCol": 253366
-                        },
-                        "19": {
-                            "minTileRow": 175302,
-                            "maxTileRow": 294060,
-                            "minTileCol": 170159,
-                            "maxTileCol": 343473
-                        },
-                        "20": {
-                            "minTileRow": 376733,
-                            "maxTileRow": 384679,
-                            "minTileCol": 530773,
-                            "maxTileCol": 540914
-                            }
-                    }
-                }
-            });
 
-        this.addElevationLayer({
-            protocol:   "wmts",
-            id:         "IGN_MNT",
-            url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
-            noDataValue : -99999,
-            wmtsOptions: {
-                    name: "ELEVATION.ELEVATIONGRIDCOVERAGE",
-                    mimetype: "image/x-bil;bits=32",
-                    tileMatrixSet: "PM",
-                    tileMatrixSetLimits: {
-                         // "2": {
-                         //    "minTileRow": 0,
-                         //    "maxTileRow": 2,
-                         //    "minTileCol": 2,
-                         //    "maxTileCol": 7
-                         //  },
-                          "3": {
-                            "minTileRow": 1,
-                            "maxTileRow": 5,
-                            "minTileCol": 5,
-                            "maxTileCol": 15
-                          },
-                          "4": {
-                            "minTileRow": 3,
-                            "maxTileRow": 10,
-                            "minTileCol": 10,
-                            "maxTileCol": 30
-                          },
-                          "5": {
-                            "minTileRow": 6,
-                            "maxTileRow": 20,
-                            "minTileCol": 20,
-                            "maxTileCol": 61
-                          },
-                          "6": {
-                            "minTileRow": 13,
-                            "maxTileRow": 40,
-                            "minTileCol": 41,
-                            "maxTileCol": 123
-                          },
-                          "7": {
-                            "minTileRow": 27,
-                            "maxTileRow": 80,
-                            "minTileCol": 82,
-                            "maxTileCol": 247
-                          },
-                          "8": {
-                            "minTileRow": 54,
-                            "maxTileRow": 160,
-                            "minTileCol": 164,
-                            "maxTileCol": 494
-                          },
-                          "9": {
-                            "minTileRow": 108,
-                            "maxTileRow": 321,
-                            "minTileCol": 329,
-                            "maxTileCol": 989
-                          },
-                          "10": {
-                            "minTileRow": 216,
-                            "maxTileRow": 642,
-                            "minTileCol": 659,
-                            "maxTileCol": 1979
-                          },
-                          "11": {
-                            "minTileRow": 432,
-                            "maxTileRow": 1285,
-                            "minTileCol": 1319,
-                            "maxTileCol": 3959
-                          }
-                        }
-                }
-            });
 
-        this.addElevationLayer({
-            protocol:   "wmts",
-            id:         "IGN_MNT_HIGHRES",
-            url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
-            noDataValue : -99999,
-            wmtsOptions: {
-                    name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
-                    mimetype: "image/x-bil;bits=32",
-                    tileMatrixSet: "PM",
-                    tileMatrixSetLimits: {
-                          "6": {
-                            "minTileRow": 13,
-                            "maxTileRow": 36,
-                            "minTileCol": 62,
-                            "maxTileCol": 80
-                          },
-                          "7": {
-                            "minTileRow": 27,
-                            "maxTileRow": 73,
-                            "minTileCol": 124,
-                            "maxTileCol": 160
-                          },
-                          "8": {
-                            "minTileRow": 55,
-                            "maxTileRow": 146,
-                            "minTileCol": 248,
-                            "maxTileCol": 320
-                          },
-                          "9": {
-                            "minTileRow": 110,
-                            "maxTileRow": 292,
-                            "minTileCol": 497,
-                            "maxTileCol": 640
-                          },
-                          "10": {
-                            "minTileRow": 221,
-                            "maxTileRow": 585,
-                            "minTileCol": 994,
-                            "maxTileCol": 1281
-                          },
-                          "11": {
-                            "minTileRow": 442,
-                            "maxTileRow": 1171,
-                            "minTileCol": 1989,
-                            "maxTileCol": 2563
-                          },
-                          "12": {
-                            "minTileRow": 885,
-                            "maxTileRow": 2343,
-                            "minTileCol": 3978,
-                            "maxTileCol": 5126
-                          },
-                          "13": {
-                            "minTileRow": 1770,
-                            "maxTileRow": 4687,
-                            "minTileCol": 7957,
-                            "maxTileCol": 10253
-                          },
-                          "14": {
-                            "minTileRow": 3540,
-                            "maxTileRow": 9375,
-                            "minTileCol": 15914,
-                            "maxTileCol": 20507
-                          }
-                        }
-                }
-            });
+        //!\\ TEMP
+        //this.scene.wait(0);
+        //!\\ TEMP
+
+        return this.scene;
+
+    };
+
+    ApiGlobe.prototype.update = function() {
 
         //!\\ TEMP
         this.scene.wait(0);
         //!\\ TEMP
-
-        return this.scene;
 
     };
 
@@ -440,16 +242,42 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
         this.scene.renderScene3D();
     };
 
-    ApiGlobe.prototype.showClouds = function(value) {
+    ApiGlobe.prototype.showClouds = function(value, satelliteAnimation) {
 
-        this.scene.layers[0].node.showClouds(value);
+        this.scene.getMap().showClouds(value, satelliteAnimation);
+        this.scene.renderScene3D();
     };
 
     ApiGlobe.prototype.setRealisticLightingOn = function(value) {
 
+        this.scene.setLightingPos();
         this.scene.gfxEngine.setLightingOn(value);
-        this.scene.layers[0].node.setRealisticLightingOn(value);
+        this.scene.getMap().setRealisticLightingOn(value);
         this.scene.browserScene.updateMaterialUniform("lightingOn",value ? 1:0);
+        this.scene.renderScene3D();
+    };
+
+    ApiGlobe.prototype.setLayerVibility = function(id,visible){
+
+        this.scene.getMap().setLayerVibility(id,visible);
+
+        this.scene.renderScene3D();
+    };
+
+    ApiGlobe.prototype.animateTime = function(value) {
+
+        this.scene.animateTime(value);
+    };
+
+    ApiGlobe.prototype.orbit = function(value) {
+
+        this.scene.orbit(value);
+    };
+    ApiGlobe.prototype.setLayerOpacity = function(id,visible){
+
+        this.scene.getMap().setLayerOpacity(id,visible);
+
+        this.scene.renderScene3D();
     };
 
     ApiGlobe.prototype.setStreetLevelImageryOn = function(value){
@@ -459,28 +287,30 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
      /**
     * Gets orientation angles of the current camera, in degrees.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/okfj460p/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     */
     ApiGlobe.prototype.getCameraOrientation = function () {
 
-        var tiltCam = this.scene.currentControls().getTiltCamera();
-        var headingCam = this.scene.currentControls().getHeadingCamera();
+        var tiltCam = this.scene.currentControls().getTilt();
+        var headingCam = this.scene.currentControls().getHeading();
         return [tiltCam, headingCam];
     };
 
     /**
     * Get the camera location projected on the ground in lat,lon.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/mjv7ha02/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     */
 
     ApiGlobe.prototype.getCameraLocation = function () {
-
         var cam = this.scene.currentCamera().camera3D;
         return this.projection.cartesianToGeo(cam.position);
     };
 
     /**
     * Gets the coordinates of the current central point on screen.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/4tjgnv7z/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @return {Position} postion
     */
@@ -493,6 +323,7 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     /**
     * Gets orientation angles of the current camera, in degrees.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/9qr2mogh/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Orientation} Param - The angle of the rotation in degrees.
     */
@@ -533,6 +364,7 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     /**
     * Get the tilt.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/kcx0of9j/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @return {Angle} number - The angle of the rotation in degrees.
     */
@@ -544,7 +376,8 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
     };
 
     /**
-    * Get the rotation.
+    * Get the Heading.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/pxv1Lw16/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @return {Angle} number - The angle of the rotation in degrees.
     */
@@ -557,6 +390,7 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     /**
     * Get the "range", i.e. distance in meters of the camera from the center.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/Lbt1vfek/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @return {Number} number
     */
@@ -579,6 +413,7 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     /**
     * Change the tilt.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/p6t76zox/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Angle} Number - The angle.
     * @param {Boolean} [pDisableAnimation] - Used to force the non use of animation if its enable.
@@ -590,7 +425,8 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
     };
 
     /**
-    * Change the tilt.
+    * Change the heading.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/rxe4xgxj/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Angle} Number - The angle.
     * @param {Boolean} [pDisableAnimation] - Used to force the non use of animation if its enable.
@@ -625,29 +461,32 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     /**
     * Return the distance in meter between two geographic position.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/0nLhws5u/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Position} First - Position.
     * @param {Position} Second - Position.
     */
 
     ApiGlobe.prototype.computeDistance = function(p1,p2){
-
-        this.scene.getEllipsoid().computeDistance(p1,p2);
+        return this.scene.getEllipsoid().computeDistance(new CoordCarto().setFromDegreeGeo(p1.lon, p1.lat, p1.alt),new CoordCarto().setFromDegreeGeo(p2.lon, p2.lat, p2.alt));
     };
 
     /**
     * Moves the central point on screen to specific coordinates.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/x06yhbq6/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Position} position - The position on the map.
     */
 
     ApiGlobe.prototype.setCenter = function (position) {
-        var position3D = this.scene.getEllipsoid().cartographicToCartesian(position);
+//        var position3D = this.scene.getEllipsoid().cartographicToCartesian(position);
+        var position3D = this.scene.getEllipsoid().cartographicToCartesian(new CoordCarto().setFromDegreeGeo(position.lon, position.lat, position.alt));
         this.scene.currentControls().setCenter(position3D);
     };
 
     /**
     * Moves the central point on screen to specific coordinates while changing the zoom and / or the orientation at the same time. Whenever the map center and zoom should be changed at the same time, or the map center and orientation, or the three of them, then setCenterAdvanced() should always be called instead of separate calls of setCenter(), setZoomLevel(), setZoomScale() or setCameraOrientation(). The level must be in the[getMinZoomLevel(), getMaxZoomLevel()] range.The scale must be a positive integer, as a zoom scale denominator integer, e.g. for 1 / 500 the value must be 500, not 0.002.Zoom level and scale can not be set at the same time. Orientation can select heading and tilt angles like setCameraOrientation(). The view flies to the desired coordinate, i.e.is not teleported instantly.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/7yk0mpn0/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Position} pPosition - The position on the map.
     * @param {Boolean} [pDisableAnimation] - Used to force the non use of animation if its enable.
@@ -655,13 +494,14 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     ApiGlobe.prototype.setCenterAdvanced = function (pPosition/*, pDisableAnimationopt*/ ){
         this.setCenter(pPosition.position);
-//        this.setRange(pPosition.range);
+        this.setRange(pPosition.range);
         this.setHeading(pPosition.heading);
         this.setTilt(pPosition.tilt);
     };
 
     /**
     * Set the "range", i.e. distance in meters of the camera from the center.
+    * &lt;iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/Lt3jL5pd/embedded/" allowfullscreen="allowfullscreen" frameborder="0">&lt;/iframe>
     * @constructor
     * @param {Number} pRange - The camera altitude.
     * @param {Boolean} [pDisableAnimation] - Used to force the non use of animation if its enable.
@@ -672,10 +512,17 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
         this.scene.currentControls().setRange(pRange);
     };
 
+    ApiGlobe.prototype.getZoomLevel = function (){
+        return this.scene.getZoomLevel();
+    };
+
     ApiGlobe.prototype.launchCommandApi = function () {
+//        console.log(this.getMinZoomLevel("IGNPO"));
+//        console.log(this.getMaxZoomLevel("IGN_MNT"));
 //        console.log(this.getCenter());
 //        console.log(this.getCameraLocation());
 //        console.log(this.getCameraOrientation());
+//        console.log(this.getZoomLevel());
 //        console.log(this.pickPosition());
 //        console.log(this.getTilt());
 //        console.log(this.getHeading());
@@ -686,17 +533,17 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 //        this.resetHeading();
 //        var p1 = new CoordCarto(2.4347047,48.8472568,0);
 //        var p2 = new CoordCarto(2.4345599,48.8450221,0);
-//        this.computeDistance(p1, p2);
+//        console.log(this.computeDistance({lon:2.4347047,lat:48.8472568,alt:0},{lon:2.4345599,lat:48.8450221,alt:0}));
 //
         //var p = new CoordCarto(-74.0059700 ,40.7142700,0); //NY
 
-        //var p = new CoordCarto().setFromDegreeGeo(coordCarto.lat, coordCarto.lon, coordCarto.alt))
-//        var p = new CoordCarto().setFromDegreeGeo(40.7142700, -74.0059700, 0); //NY
-
-//        this.setCenter(p);
-//        var p2 = new CoordCarto().setFromDegreeGeo(48.8472568,2.4347047,0); //Paris
-//        this.setCenter(p2);
+//        var p = new CoordCarto().setFromDegreeGeo(coordCarto.lon, coordCarto.lat, coordCarto.alt))
+//        var p = new CoordCarto().setFromDegreeGeo(2,20,0); //NY
 //
+//        this.setCenter(p);
+//        var p2 = new CoordCarto().setFromDegreeGeo(2.4347047,48.8472568,0); //Paris
+//        this.setCenter(p2);
+//        this.setCenter({lon:-74,lat:40, alt:0});
 //        this.testTilt();
 //        this.testHeading();
         //console.log("range 1  " + this.getRange());
@@ -722,7 +569,7 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 
     ApiGlobe.prototype.showKML = function(value) {
 
-        this.scene.layers[0].node.showKML(value);
+        this.scene.getMap().showKML(value);
         this.scene.renderScene3D();
     };
 
@@ -740,13 +587,13 @@ define('Core/Commander/Interfaces/ApiInterface/ApiGlobe', [
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_anonymous_-ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="-_anonymous_-ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="-_anonymous_-ApiGlobe_computeDistance.html">computeDistance</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_getCenter.html">getCenter</a></li><li><a href="-_anonymous_-ApiGlobe_getHeading.html">getHeading</a></li><li><a href="-_anonymous_-ApiGlobe_getRange.html">getRange</a></li><li><a href="-_anonymous_-ApiGlobe_getTilt.html">getTilt</a></li><li><a href="-_anonymous_-ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="-_anonymous_-ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="-_anonymous_-ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="-_anonymous_-ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_setCenter.html">setCenter</a></li><li><a href="-_anonymous_-ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="-_anonymous_-ApiGlobe_setHeading.html">setHeading</a></li><li><a href="-_anonymous_-ApiGlobe_setRange.html">setRange</a></li><li><a href="-_anonymous_-ApiGlobe_setTilt.html">setTilt</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_anonymous_-ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="-_anonymous_-ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="-_anonymous_-ApiGlobe_computeDistance.html">computeDistance</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_getCenter.html">getCenter</a></li><li><a href="-_anonymous_-ApiGlobe_getHeading.html">getHeading</a></li><li><a href="-_anonymous_-ApiGlobe_getMaxZoomLevel.html">getMaxZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getMinZoomLevel.html">getMinZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getRange.html">getRange</a></li><li><a href="-_anonymous_-ApiGlobe_getTilt.html">getTilt</a></li><li><a href="-_anonymous_-ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="-_anonymous_-ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="-_anonymous_-ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="-_anonymous_-ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_setCenter.html">setCenter</a></li><li><a href="-_anonymous_-ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="-_anonymous_-ApiGlobe_setHeading.html">setHeading</a></li><li><a href="-_anonymous_-ApiGlobe_setRange.html">setRange</a></li><li><a href="-_anonymous_-ApiGlobe_setTilt.html">setTilt</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Apr 15 2016 16:25:31 GMT+0200 (Paris, Madrid (heure d’été))
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jun 09 2016 10:54:03 GMT+0200 (Paris, Madrid (heure d’été))
 </footer>
 
 <script> prettyPrint(); </script>
