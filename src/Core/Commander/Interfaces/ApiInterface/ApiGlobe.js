@@ -16,6 +16,7 @@ import CoordCarto from 'Core/Geographic/CoordCarto';
 import Ellipsoid from 'Core/Math/Ellipsoid';
 import Projection from 'Core/Geographic/Projection';
 import CustomEvent from 'custom-event';
+import createChart from 'dev/debug';
 
 var loaded = false;
 var eventLoaded = new CustomEvent('globe-loaded');
@@ -638,6 +639,48 @@ ApiGlobe.prototype.loadGPX = function(url) {
 
     this.scene.renderScene3D();
 };
+
+if (__DEV__) {
+    ApiGlobe.prototype.createDebugDisplay = function(containerId) {
+        this.Debug = {
+            showOutline: false
+        };
+
+        // create debug charts
+        createChart(containerId, 'visibility',
+            {
+                data: [
+                    { title: 'visible', data: function(qt) { return qt.getGlobalStat('visible'); } },
+                    { title: 'culled', data: function(qt) { return qt.getGlobalStat('culled'); } },
+                    { title: 'displayed', data: function(qt) { return qt.getGlobalStat('displayed'); } }
+                ],
+                context: this.scene.layers[0].node.tiles
+            });
+
+        createChart(containerId, 'Cache',
+            {
+                data: [
+                    { title: 'hit', data: function(wmts) { return wmts.cache.statistics.hit; } },
+                    { title: 'miss', data: function(wmts) { return wmts.cache.statistics.miss; } },
+                    { title: 'elements', data: function(wmts) { return wmts.cache.statistics.count; } },
+                ],
+                context: this.getProtocolProvider('wmts')
+            });
+        // create debug UI
+        let gui = new dat.GUI();
+        gui.add(this.Debug, 'showOutline').name('Show tiles outilne').onChange(
+            function(newValue) {
+                var cO = function(object) {
+                    if (object.materials) {
+                         object.materials[0].uniforms.showOutline.value = newValue;
+                    }
+                };
+
+                this.scene.getMap().tiles.children[0].traverse(cO);
+                this.scene.renderScene3D();
+            }.bind(this));
+        };
+}
 
 
 export default ApiGlobe;

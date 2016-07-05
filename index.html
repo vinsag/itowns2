@@ -22,15 +22,31 @@ and open the template in the editor.
             }
             #menuDiv {position: absolute; top:0px; margin-left: 0px;}
 
+            #debugDiv {
+                display: flex;
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                width: 100%;
+                height: 300px;
+            }
+            #debugDiv > div {
+                flex: 1 1 auto;
+            }
+
 
         </style>
         <meta charset="UTF-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js"></script>
+
     </head>
     <body>
         <div id="viewerDiv"></div>
+
+        <div id="debugDiv"></div>
+
         <script src="dist/itowns2.js"> </script>
         <script type="text/javascript">
 
@@ -40,7 +56,7 @@ and open the template in the editor.
 
                var viewerDiv = document.getElementById("viewerDiv");
 
-               itowns.viewer.createSceneGlobe(initCenter, viewerDiv) ;
+               var scene = itowns.viewer.createSceneGlobe(initCenter, viewerDiv) ;
                //console.log(itowns.viewer.pickPosition());
 
               itowns.viewer.addImageryLayer({
@@ -724,6 +740,10 @@ and open the template in the editor.
                 // gui.add(text, 'StreetLevelImagery').onChange(function(newValue) {
                 //     itowns.viewer.setStreetLevelImageryOn(newValue);
                 // });
+
+                if (itowns.viewer.createDebugDisplay) {
+                    itowns.viewer.createDebugDisplay('debugDiv');
+                }
 
         </script>
     </body>

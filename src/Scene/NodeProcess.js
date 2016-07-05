@@ -167,11 +167,19 @@ NodeProcess.prototype.refineNodeLayers = function(node, camera, params, force) {
 
             node.pendingLayers[i] = true;
 
+            if (__DEV__) {
+                node.materials[0].uniforms.borderColor.value[2*i] = 1.0;
+            }
+
             layerFunctions[i](params.tree, node, params.layersConfig, force).then(
                 // reset the flag, regardless of the request success/failure
                 function() { node.pendingLayers[i] = undefined; },
                 function() { node.pendingLayers[i] = undefined; }
-            );
+            ).then(function() {
+                if (__DEV__) {
+                    node.materials[0].uniforms.borderColor.value[2*i] = 0.0;
+                }
+            })
         }
     }
 };
