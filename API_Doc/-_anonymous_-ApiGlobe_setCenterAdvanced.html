@@ -47,7 +47,10 @@
 
 
 <div class="description">
-    Moves the central point on screen to specific coordinates while changing the zoom and / or the orientation at the same time. Whenever the map center and zoom should be changed at the same time, or the map center and orientation, or the three of them, then setCenterAdvanced() should always be called instead of separate calls of setCenter(), setZoomLevel(), setZoomScale() or setCameraOrientation(). The level must be in the[getMinZoomLevel(), getMaxZoomLevel()] range.The scale must be a positive integer, as a zoom scale denominator integer, e.g. for 1 / 500 the value must be 500, not 0.002.Zoom level and scale can not be set at the same time. Orientation can select heading and tilt angles like setCameraOrientation(). The view flies to the desired coordinate, i.e.is not teleported instantly.
+    Changes the center of the scene on screen to the specified coordinates.
+This function allows to change the central position, the zoom level, the range, the scale and the camera orientation at the same time.
+The level has to be between the [getMinZoomLevel(), getMaxZoomLevel()].
+The zoom level and the scale can't be set at the same time.
 <iframe width="100%" height="400" src="//jsfiddle.net/iTownsIGN/7yk0mpn0/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 </div>
 
@@ -110,7 +113,7 @@
 
             
 
-            <td class="description last">The position on the map.</td>
+            <td class="description last">The detailed position in the scene.</td>
         </tr>
 
     
@@ -184,7 +187,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ApiGlobe.js.html">ApiGlobe.js</a>, <a href="ApiGlobe.js.html#line467">line 467</a>
+        <a href="ApiGlobe.js.html">ApiGlobe.js</a>, <a href="ApiGlobe.js.html#line530">line 530</a>
     </li></ul></dd>
     
 
@@ -240,13 +243,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_anonymous_-ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="-_anonymous_-ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="-_anonymous_-ApiGlobe_computeDistance.html">computeDistance</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_getCenter.html">getCenter</a></li><li><a href="-_anonymous_-ApiGlobe_getHeading.html">getHeading</a></li><li><a href="-_anonymous_-ApiGlobe_getMaxZoomLevel.html">getMaxZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getMinZoomLevel.html">getMinZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getRange.html">getRange</a></li><li><a href="-_anonymous_-ApiGlobe_getTilt.html">getTilt</a></li><li><a href="-_anonymous_-ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="-_anonymous_-ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="-_anonymous_-ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="-_anonymous_-ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_setCenter.html">setCenter</a></li><li><a href="-_anonymous_-ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="-_anonymous_-ApiGlobe_setHeading.html">setHeading</a></li><li><a href="-_anonymous_-ApiGlobe_setRange.html">setRange</a></li><li><a href="-_anonymous_-ApiGlobe_setTilt.html">setTilt</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_anonymous_-ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="-_anonymous_-ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="-_anonymous_-ApiGlobe_computeDistance.html">computeDistance</a></li><li><a href="-_anonymous_-ApiGlobe_createSceneGlobe.html">createSceneGlobe</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="-_anonymous_-ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_getCenter.html">getCenter</a></li><li><a href="-_anonymous_-ApiGlobe_getHeading.html">getHeading</a></li><li><a href="-_anonymous_-ApiGlobe_getLayers.html">getLayers</a></li><li><a href="-_anonymous_-ApiGlobe_getMaxZoomLevel.html">getMaxZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getMinZoomLevel.html">getMinZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_getRange.html">getRange</a></li><li><a href="-_anonymous_-ApiGlobe_getTilt.html">getTilt</a></li><li><a href="-_anonymous_-ApiGlobe_getZoomLevel.html">getZoomLevel</a></li><li><a href="-_anonymous_-ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="-_anonymous_-ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="-_anonymous_-ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="-_anonymous_-ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="-_anonymous_-ApiGlobe_setCenter.html">setCenter</a></li><li><a href="-_anonymous_-ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="-_anonymous_-ApiGlobe_setHeading.html">setHeading</a></li><li><a href="-_anonymous_-ApiGlobe_setLayerOpacity.html">setLayerOpacity</a></li><li><a href="-_anonymous_-ApiGlobe_setLayerVisibility.html">setLayerVisibility</a></li><li><a href="-_anonymous_-ApiGlobe_setRange.html">setRange</a></li><li><a href="-_anonymous_-ApiGlobe_setTilt.html">setTilt</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jun 09 2016 10:54:03 GMT+0200 (Paris, Madrid (heure d’été))
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Jul 08 2016 11:40:30 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>
