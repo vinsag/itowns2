@@ -47,7 +47,7 @@ and open the template in the editor.
                 protocol:   "wmts",
                 id:         "Ortho",
                 url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
-                options: {
+                wmtsOptions: {
                         //name:'GEOGRAPHICALGRIDSYSTEMS.MAPS',
                         name: "ORTHOIMAGERY.ORTHOPHOTOS",
                         mimetype: "image/jpeg",
@@ -183,13 +183,12 @@ and open the template in the editor.
                     }
                 });
 
-
                 itowns.viewer.addImageryLayer({
                 protocol:   "wmts",
                 id:         "OrthoCRS",
                 url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
                 fx :        1.0,
-                options: {
+                wmtsOptions: {
                         name: 'ORTHOIMAGERY.ORTHOPHOTOS.CRS84',
                         mimetype: "image/jpeg",
                         tileMatrixSet: "WGS84G",
@@ -276,7 +275,7 @@ and open the template in the editor.
                 id:         "ScanEX",
                 url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
                 fx :        2.5,
-                options: {
+                wmtsOptions: {
                         //name:'GEOGRAPHICALGRIDSYSTEMS.MAPS',
                         // name: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.ROUTIER',
                         name: 'GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD',
@@ -373,44 +372,23 @@ and open the template in the editor.
         //         protocol:   "wmtsc",
         //         id:         "DARK",
         //         customUrl:  "http://a.basemaps.cartocdn.com/dark_all/%TILEMATRIX/%COL/%ROW.png",
-        //         options: { tileMatrixSet: "PM"}
+        //         wmtsOptions: { tileMatrixSet: "PM"}
         //     });
 
         // itowns.viewer.addImageryLayer({
         //     protocol:   "wmtsc",
         //     id:         "OPENSM",
         //     customUrl:  'http://b.tile.openstreetmap.fr/osmfr/%TILEMATRIX/%COL/%ROW.png',
-        //     options: { tileMatrixSet: "PM"},
+        //     wmtsOptions: { tileMatrixSet: "PM"},
         //     fx :        2.5,
         // });
-
-        itowns.viewer.addImageryLayer({
-                                        url       : "https://wxs.ign.fr/gratuit/geoportail/v/wms?",
-                                        protocol  : 'WMS',
-                                        version   : '1.3.0',
-                                        id        : 'testwms',
-                                        name      : 'REGION.2016',
-                                        style      : "",
-                                        projection : "EPSG:4326",
-                                        transparent : true,
-                                        // min long, min lat, max long, max lat
-                                        bbox      : [-61.80983300000002, -21.38963079935857, 55.83665389999998, 51.0890011990783],
-                                        featureInfoMimeType : "",
-                                        dateTime  : "",
-                                        heightMapWidth : 256,
-                                        waterMask      : false,
-                                        options: {
-                                            mimeType  : "image/png",
-                                            tileMatrixSet: 'WGS84G'
-                                        }
-                                    });
 
         itowns.viewer.addElevationLayer({
             protocol:   "wmts",
             id:         "IGN_MNT",
             url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
             noDataValue : -99999,
-            options: {
+            wmtsOptions: {
                     name: "ELEVATION.ELEVATIONGRIDCOVERAGE",
                     mimetype: "image/x-bil;bits=32",
                     tileMatrixSet: "WGS84G",
@@ -484,7 +462,7 @@ and open the template in the editor.
             id:         "IGN_MNT_HIGHRES",
             url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
             noDataValue : -99999,
-            options: {
+            wmtsOptions: {
                     name: "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
                     mimetype: "image/x-bil;bits=32",
                     tileMatrixSet: "WGS84G",
@@ -575,7 +553,7 @@ and open the template in the editor.
                 {
                     var idLayer = id;
 
-                    if(layers[id].options.mimetype != "image/x-bil;bits=32")
+                    if(layers[id].mimetype != "image/x-bil;bits=32")
                     {
 
                         text[idLayer] = true;
