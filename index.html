@@ -400,13 +400,84 @@ and open the template in the editor.
             }
         });
 
+
+    itowns.viewer.addElevationLayer({
+            protocol:   "wmts",
+            id:         "MNT_WORLD_SRTM3",
+            url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
+            noDataValue : -99999,
+            updateStrategy: {
+                type: 1,
+                options: {
+                    groups: [3, 7, 10, 14]
+                }
+            },
+            options: {
+                name: "ELEVATION.ELEVATIONGRIDCOVERAGE.SRTM3",
+                mimetype: "image/x-bil;bits=32",
+                tileMatrixSet: "WGS84G",
+                tileMatrixSetLimits: {
+                    "3": {
+                        "minTileRow": 1,
+                        "maxTileRow": 6,
+                        "minTileCol": 0,
+                        "maxTileCol": 16
+                    },
+                    "4": {
+                        "minTileRow": 2,
+                        "maxTileRow": 12,
+                        "minTileCol": 0,
+                        "maxTileCol": 32
+                    },
+                    "5": {
+                        "minTileRow": 5,
+                        "maxTileRow": 25,
+                        "minTileCol": 0,
+                        "maxTileCol": 64
+                    },
+                    "6": {
+                        "minTileRow": 10,
+                        "maxTileRow": 51,
+                        "minTileCol": 0,
+                        "maxTileCol": 128
+                    },
+                    "7": {
+                        "minTileRow": 20,
+                        "maxTileRow": 103,
+                        "minTileCol": 0,
+                        "maxTileCol": 256
+                    },
+                    "8": {
+                        "minTileRow": 41,
+                        "maxTileRow": 207,
+                        "minTileCol": 0,
+                        "maxTileCol": 512
+                    },
+                    "9": {
+                        "minTileRow": 82,
+                        "maxTileRow": 415,
+                        "minTileCol": 0,
+                        "maxTileCol": 1024
+                    },
+                    "10": {
+                        "minTileRow": 164,
+                        "maxTileRow": 830,
+                        "minTileCol": 0,
+                        "maxTileCol": 2048
+                    }
+
+                }
+            }
+        });
+
+    /*
         itowns.viewer.addElevationLayer({
             protocol:   "wmts",
             id:         "IGN_MNT",
             url:        "http://wxs.ign.fr/va5orxd0pgzvq3jxutqfuy0b/geoportail/wmts",
             noDataValue : -99999,
             updateStrategy: {
-                type: 1, /* see LayerUpdateStrategy.js */
+                type: 1,
                 options: {
                     groups: [3, 7, 11, 14]
                 }
@@ -473,7 +544,7 @@ and open the template in the editor.
                 }
             }
         });
-
+*/
         itowns.viewer.addElevationLayer({
             protocol:   "wmts",
             id:         "IGN_MNT_HIGHRES",
@@ -523,8 +594,8 @@ and open the template in the editor.
                     "11": {
                         "minTileRow": 442,
                         "maxTileRow": 1171,
-                        "minTileCol": 1989,
-                        "maxTileCol": 2563
+                        "minTileCol": 19,
+                        "maxTileCol": 25
                     },
                     "12": {
                         "minTileRow": 885,
