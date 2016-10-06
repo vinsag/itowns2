@@ -95,7 +95,7 @@ NodeProcess.prototype.subdivideNode = function(node, camera, params) {
 
 
                 // update wmts
-                var colorLayers = params.layersConfig.getColorLayers();
+                var colorLayers = params.layersConfig.getColorLayers();//getColorLayersVisible();//getColorLayers();
                 for (j = 0; j < colorLayers.length; j++) {
                     layer = colorLayers[j];
                     var tileMatrixSet = layer.options.tileMatrixSet;
@@ -217,7 +217,7 @@ function findAncestorWithValidTextureForLayer(node, layer) {
 function updateNodeImagery(quadtree, node, layersConfig, force) {
     let promises = [];
 
-    const colorLayers = layersConfig.getColorLayers();
+    const colorLayers = layersConfig.getColorLayers();//Visible();
     for (let i = 0; i < colorLayers.length; i++) {
         let layer = colorLayers[i];
 

@@ -71,6 +71,17 @@ LayersConfiguration.prototype.getColorLayers = function() {
     return this.colorLayers;
 }
 
+LayersConfiguration.prototype.getColorLayersVisible = function() {
+    var colorLayersVisible = []; //console.log(this.layersState);
+    for(var i=0; i < this.colorLayers.length;++i){
+        var layer = this.colorLayers[i]; //console.log(layer);
+        if(this.layersState[layer.id].visible)
+            colorLayersVisible.push(this.colorLayers[i]);
+         
+    } 
+    return colorLayersVisible;//this.colorLayers;//
+}
+
 LayersConfiguration.prototype.getColorLayersId = function() {
     return this.colorLayers.map(function(l) {
         return l.id;
