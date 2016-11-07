@@ -1,0 +1,672 @@
+{
+	"asset" : {
+		"version": "0.0"
+	},
+	"geometricError": 32,
+	"root": {
+		"boundingVolume": {
+			"region": [
+				1837938.71737,
+				5174004.15543,
+				1839825.89649,
+				5176059.28511,
+				170.373177,
+				290.0357
+			]
+		},
+		"geometricError": 16,
+		"refine": "add",
+		"content": {
+			"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=0/2/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+		},
+		"children": [
+			{
+				"boundingVolume": {
+					"region": [
+						1838934.75665,
+						5175033.71648,
+						1839817.24001,
+						5176059.28511,
+						170.373177,
+						290.0357
+					]
+				},
+				"geometricError": 8,
+				"refine": "add",
+				"content": {
+					"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=1/5/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+				},
+				"children": [
+					{
+						"boundingVolume": {
+							"region": [
+								1839127.22316,
+								5175533.91658,
+								1839320.14666,
+								5176059.28511,
+								219.778174,
+								249.657009
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/11/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						}
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1839291.00994,
+								5175570.37277,
+								1839817.24001,
+								5176033.54859,
+								170.839302,
+								265.281091
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/11/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1839779.24174,
+										5175714.18968,
+										1839795.75745,
+										5175729.38998,
+										183.133409,
+										191.81771
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/22/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839324.3315,
+										5175852.5853,
+										1839570.4193,
+										5176016.66784,
+										172.248375,
+										232.426637
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/23/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839582.10762,
+										5175850.21862,
+										1839816.88909,
+										5176023.69694,
+										170.839302,
+										183.527805
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/23/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1839308.66103,
+								5175134.55272,
+								1839706.8116,
+								5175532.15172,
+								228.926295,
+								290.0357
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/10/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1839509.01806,
+										5175336.25554,
+										1839513.35407,
+										5175343.02933,
+										234.214436,
+										237.363781
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/21/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839586.66654,
+										5175324.8678,
+										1839703.60983,
+										5175467.43544,
+										234.429619,
+										239.896384
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/21/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1838934.75665,
+								5175033.71648,
+								1839309.8644,
+								5175514.62654,
+								224.055016,
+								281.558551
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/10/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1839014.53134,
+										5175361.45184,
+										1839042.32607,
+										5175414.4415,
+										225.435126,
+										230.108436
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/21/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839170.96015,
+										5175352.86425,
+										1839309.8644,
+										5175514.62654,
+										226.240774,
+										241.580002
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/21/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839064.69284,
+										5175086.92727,
+										1839132.39009,
+										5175186.54657,
+										236.34873,
+										258.298004
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/20/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1838970.24091,
+										5175102.78077,
+										1839056.56301,
+										5175160.4907,
+										243.615662,
+										261.978925
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/20/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"boundingVolume": {
+					"region": [
+						1837938.71737,
+						5174004.15543,
+						1838829.72296,
+						5174695.98793,
+						212.335584,
+						313.297444
+					]
+				},
+				"geometricError": 8,
+				"refine": "add",
+				"content": {
+					"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=1/4/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+				},
+				"children": [
+					{
+						"boundingVolume": {
+							"region": [
+								1838392.67307,
+								5174059.39294,
+								1838819.12948,
+								5174449.13151,
+								224.029609,
+								280.055017
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/8/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						}
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1837953.96292,
+								5174037.54702,
+								1838317.29925,
+								5174216.4634,
+								213.094921,
+								241.652838
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/8/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						}
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1838737.6596,
+								5174566.69856,
+								1838774.13402,
+								5174578.22214,
+								238.650549,
+								257.307061
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/9/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						}
+					}
+				]
+			},
+			{
+				"boundingVolume": {
+					"region": [
+						1838784.31087,
+						5174031.41459,
+						1839825.89649,
+						5175084.51179,
+						238.762195,
+						304.617805
+					]
+				},
+				"geometricError": 8,
+				"refine": "add",
+				"content": {
+					"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=1/4/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+				},
+				"children": [
+					{
+						"boundingVolume": {
+							"region": [
+								1839303.75238,
+								5174031.41459,
+								1839825.89649,
+								5174543.59038,
+								264.140049,
+								303.803311
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/8/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1839325.92419,
+										5174032.06089,
+										1839574.52938,
+										5174272.16578,
+										272.37133,
+										298.256001
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/16/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839561.35946,
+										5174031.41459,
+										1839825.89649,
+										5174288.29095,
+										273.78118,
+										288.812012
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/16/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839554.19171,
+										5174276.68733,
+										1839823.23301,
+										5174541.41243,
+										271.476636,
+										297.203738
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/17/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839323.46112,
+										5174283.29967,
+										1839562.27915,
+										5174543.59038,
+										267.809022,
+										292.546273
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/17/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1838827.2134,
+								5174040.64615,
+								1839322.23266,
+								5174559.47236,
+								238.762195,
+								292.840742
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/8/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1838857.27285,
+										5174047.12716,
+										1839062.73186,
+										5174280.88976,
+										252.692564,
+										281.224124
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/16/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839063.84171,
+										5174040.64615,
+										1839317.92925,
+										5174218.85262,
+										262.763682,
+										289.011993
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/16/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839084.41107,
+										5174329.24898,
+										1839312.05443,
+										5174526.23852,
+										249.198454,
+										277.131012
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/17/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1838885.03505,
+										5174301.42536,
+										1839073.02212,
+										5174493.24202,
+										238.83952,
+										266.722583
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/17/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1838784.31087,
+								5174519.33273,
+								1839302.88386,
+								5175033.16548,
+								238.958817,
+								297.911013
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/9/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1838879.8328,
+										5174538.28918,
+										1838948.75739,
+										5174765.21501,
+										238.958817,
+										271.210182
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/18/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839074.99223,
+										5174780.84204,
+										1839293.75213,
+										5175033.16548,
+										264.493282,
+										291.919247
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/19/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1838896.68573,
+										5174838.52027,
+										1839052.3571,
+										5175032.55624,
+										268.55406,
+										285.147573
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/19/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839065.2527,
+										5174750.95251,
+										1839302.88386,
+										5174786.78535,
+										274.173975,
+										291.736035
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/18/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					},
+					{
+						"boundingVolume": {
+							"region": [
+								1839310.88051,
+								5174528.28102,
+								1839814.28909,
+								5175035.25721,
+								255.740724,
+								304.617805
+							]
+						},
+						"geometricError": 4,
+						"content": {
+							"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=2/9/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+						},
+						"children": [
+							{
+								"boundingVolume": {
+									"region": [
+										1839310.88051,
+										5174530.65732,
+										1839553.61642,
+										5174793.13375,
+										271.466902,
+										292.144012
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/18/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839563.14161,
+										5174537.96178,
+										1839778.57239,
+										5174786.93907,
+										272.17917,
+										289.737245
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/18/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839558.40237,
+										5174836.44556,
+										1839814.21621,
+										5174935.93957,
+										271.020635,
+										304.019014
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/19/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							},
+							{
+								"boundingVolume": {
+									"region": [
+										1839373.60975,
+										5174781.30744,
+										1839530.90952,
+										5175001.96324,
+										260.011093,
+										283.390015
+									]
+								},
+								"geometricError": 2,
+								"content": {
+									"url": "http://192.168.56.10/server?query=getGeometry&city=lyon_tmp&tile=3/19/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}
