@@ -17,7 +17,7 @@
 		"geometricError": 16,
 		"refine": "add",
 		"content": {
-			"url": "query=getGeometry&city=lyon&tile=0/2/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+			"url": "query=getGeometry&city=lyon_tmp&tile=0/2/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 		},
 		"children": [
 			{
@@ -34,7 +34,7 @@
 				"geometricError": 8,
 				"refine": "add",
 				"content": {
-					"url": "query=getGeometry&city=lyon&tile=1/5/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+					"url": "query=getGeometry&city=lyon_tmp&tile=1/5/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 				},
 				"children": [
 					{
@@ -50,7 +50,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/11/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/11/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						}
 					},
 					{
@@ -66,7 +66,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/11/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/11/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -82,7 +82,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/22/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/22/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -98,7 +98,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/23/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/23/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -114,7 +114,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/23/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/23/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -132,7 +132,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/10/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/10/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -148,7 +148,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/21/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/21/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -164,7 +164,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/21/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/21/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -182,7 +182,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/10/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/10/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -198,7 +198,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/21/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/21/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -214,7 +214,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/21/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/21/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -230,7 +230,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/20/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/20/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -246,7 +246,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/20/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/20/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -267,7 +267,7 @@
 				"geometricError": 8,
 				"refine": "add",
 				"content": {
-					"url": "query=getGeometry&city=lyon&tile=1/4/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+					"url": "query=getGeometry&city=lyon_tmp&tile=1/4/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 				},
 				"children": [
 					{
@@ -283,7 +283,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/8/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/8/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						}
 					},
 					{
@@ -299,7 +299,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/8/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/8/0&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						}
 					},
 					{
@@ -315,7 +315,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/9/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/9/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						}
 					}
 				]
@@ -334,7 +334,7 @@
 				"geometricError": 8,
 				"refine": "add",
 				"content": {
-					"url": "query=getGeometry&city=lyon&tile=1/4/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+					"url": "query=getGeometry&city=lyon_tmp&tile=1/4/1&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 				},
 				"children": [
 					{
@@ -350,7 +350,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/8/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/8/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -366,7 +366,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/16/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/16/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -382,7 +382,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/16/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/16/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -398,7 +398,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/17/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/17/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -414,7 +414,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/17/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/17/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -432,7 +432,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/8/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/8/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -448,7 +448,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/16/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/16/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -464,7 +464,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/16/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/16/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -480,7 +480,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/17/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/17/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -496,7 +496,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/17/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/17/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -514,7 +514,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/9/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/9/2&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -530,7 +530,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/18/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/18/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -546,7 +546,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/19/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/19/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -562,7 +562,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/19/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/19/4&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -578,7 +578,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/18/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/18/5&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
@@ -596,7 +596,7 @@
 						},
 						"geometricError": 4,
 						"content": {
-							"url": "query=getGeometry&city=lyon&tile=2/9/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+							"url": "query=getGeometry&city=lyon_tmp&tile=2/9/3&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 						},
 						"children": [
 							{
@@ -612,7 +612,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/18/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/18/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -628,7 +628,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/18/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/18/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -644,7 +644,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/19/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/19/7&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							},
 							{
@@ -660,7 +660,7 @@
 								},
 								"geometricError": 2,
 								"content": {
-									"url": "query=getGeometry&city=lyon&tile=3/19/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
+									"url": "query=getGeometry&city=lyon_tmp&tile=3/19/6&format=GeoJSON&ATTRIBUTES=height,weight,distance,remarquable,tricount"
 								}
 							}
 						]
