@@ -71,8 +71,6 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
     var parent = command.requester;
 
     // build tile
-    var geometry; // getGeometry(bbox,tileCoord);
-
     var params = {
         bbox,
         zoom: tileCoord.zoom,
@@ -80,17 +78,15 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
         center: null,
         projected: null,
     };
+    // TODO: use tile geometry cache
+    var geometry = new TileGeometry(params, this.builder);
 
-    var tile = new command.type(params, this.builder);
+    var tile = new command.type(geometry, params);
 
     tile.tileCoord = tileCoord;
     tile.setUuid(this.nNode++);
     tile.link = parent.link;
     tile.geometricError = Math.pow(2, (18 - tileCoord.zoom));
-
-    if (geometry) {
-        tile.rotation.set(0, (tileCoord.col % 2) * (Math.PI * 2.0 / Math.pow(2, tileCoord.zoom + 1)), 0);
-    }
 
     parent.worldToLocal(params.center);
 
