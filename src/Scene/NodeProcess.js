@@ -463,7 +463,6 @@ var quaternion = new THREE.Quaternion();
 NodeProcess.prototype.frustumCullingOBB = function frustumCullingOBB(node, camera) {
     // position in local space
     var position = node.OBB().worldToLocal(camera.position().clone());
-    position.z -= node.distance;
 
     quaternion.multiplyQuaternions(node.OBB().quadInverse(), camera.camera3D.quaternion);
 

@@ -11,8 +11,6 @@
  * @param {type} BoundingBox
  * @param {type} defaultValue
  * @param {type} THREE
- * @param {type} OBBHelper
- * @param {type} SphereHelper
  * @param {type} LayeredMaterial
  * @param {type} GeoCoordinate
  * @returns {EllipsoidTileMesh_L20.TileMesh}
@@ -22,8 +20,6 @@ import TileGeometry from 'Globe/TileGeometry';
 import BoundingBox from 'Scene/BoundingBox';
 import defaultValue from 'Core/defaultValue';
 import * as THREE from 'three';
-import OBBHelper from 'Renderer/ThreeExtented/OBBHelper';
-import SphereHelper from 'Renderer/ThreeExtented/SphereHelper';
 import LayeredMaterial, { l_ELEVATION } from 'Renderer/LayeredMaterial';
 import GlobeDepthMaterial from 'Renderer/GlobeDepthMaterial';
 import MatteIdsMaterial from 'Renderer/MatteIdsMaterial';
@@ -41,10 +37,6 @@ function TileMesh(params, builder, geometryCache) {
 
     this.geometry = defaultValue(geometryCache, new TileGeometry(params, builder));
     this.normal = params.center.clone().normalize();
-
-    var worldNormal = new THREE.Vector3(0, 0, 1).applyQuaternion(this.OBB().getWorldQuaternion());
-    // distance to globe center
-    this.distance = params.center.clone().projectOnVector(worldNormal).length();
 
     // TODO Why move sphere center
     this.centerSphere = new THREE.Vector3().addVectors(this.geometry.boundingSphere.center, params.center);
@@ -73,28 +65,6 @@ function TileMesh(params, builder, geometryCache) {
 TileMesh.prototype = Object.create(NodeMesh.prototype);
 
 TileMesh.prototype.constructor = TileMesh;
-
-TileMesh.prototype.buildHelper = function buildHelper() {
-    // TODO Dispose HELPER!!!
-    var text = (this.level + 1).toString();
-
-    var showHelperBox = true;
-
-    if (showHelperBox)
-        { this.helper = new OBBHelper(this.geometry.OBB, text); }
-    else
-        { this.helper = new SphereHelper(this.geometry.boundingSphere.radius); }
-
-    if (this.helper instanceof SphereHelper)
-
-        { this.helper.position.add(new THREE.Vector3().setFromMatrixPosition(this.matrixWorld)); }
-
-    else if (this.helper instanceof OBBHelper)
-
-        { this.helper.translateZ(this.distance); }
-
-    this.link.add(this.helper);
-};
 
 TileMesh.prototype.dispose = function dispose() {
     // TODO à mettre dans node mesh
@@ -135,10 +105,6 @@ TileMesh.prototype.disposeChildren = function disposeChildren() {
 TileMesh.prototype.setDisplayed = function setDisplayed(show) {
     for (var key in this.materials) {
         this.materials[key].visible = show;
-    }
-
-    if (this.helper !== undefined) {
-        this.helper.setMaterialVisibility(show);
     }
 
     if (this.content !== null && show) {
@@ -201,14 +167,6 @@ TileMesh.prototype.setBBoxZ = function setBBoxZ(min, max) {
 
         this.geometry.boundingSphere.radius = Math.sqrt(delta.x * delta.x + this.oSphere.radius * this.oSphere.radius);
         this.centerSphere = new THREE.Vector3().addVectors(this.oSphere.center, trans);
-
-        if (this.helper instanceof OBBHelper) {
-            this.helper.update(this.geometry.OBB);
-            this.helper.translateZ(this.distance);
-        } else if (this.helper instanceof SphereHelper) {
-            this.helper.update(this.geometry.boundingSphere.radius);
-            this.helper.position.add(trans);
-        }
     }
 };
 
