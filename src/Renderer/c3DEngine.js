@@ -117,6 +117,7 @@ function c3DEngine(scene, positionCamera, viewerDiv, debugMode, gLDebug) {
 
     if (this.debug) {
         this.camDebug.position.x = this.size * 6;
+        this.camDebug.up.set(0, 0, 1);
         this.camDebug.lookAt(new THREE.Vector3(0, 0, 0));
         this.camDebug.near = this.size * 0.1;
         this.camDebug.far = this.size * 10;
