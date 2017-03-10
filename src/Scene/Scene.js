@@ -117,13 +117,26 @@ Scene.prototype.scheduleUpdate = function scheduleUpdate(forceRedraw) {
 };
 
 
-function updateElement(context, layer, element, childrenStages) {
-    const elements = layer.update(context, layer, element);
+function updateElements(context, source, elements) {
+    for (const element of elements) {
+        // layer's update function may return new element to update
+        const elems = source.layer.update(context, source.layer, element);
+        if (elems) {
+            // recurse on new elements to update
+            // (e.g if layer.update is updating a tree structure, each update
+            // call may return the current element's children)
+            updateElements(context, source, elems);
+        }
 
-    if (elements) {
-        for (const element of elements) {
-            for (const s of childrenStages) {
-                updateElement(context, s.layer, element, s.grafted);
+        // if there are connected layers...
+        if (source.links) {
+            for (const s of source.links) {
+                // we update them as well
+                const linkElements = s.layer.update(context, s.layer, element);
+                // and apply the same recursion logic
+                if (linkElements) {
+                    updateElements(context, s, linkElements);
+                }
             }
         }
     }
@@ -142,7 +155,6 @@ Scene.prototype.update = function update() {
         scene: this,
     };
 
-
     // call pre-update on all layers
     config.traverseLayers((layer) => {
         if (layer.preUpdate) {
@@ -151,26 +163,13 @@ Scene.prototype.update = function update() {
     });
 
     // update layers
-    for (const tree of config.layerTrees) {
-        const elements = [];
-        const layer = tree.layer;
-        // level 0 layers get a first element-less call
-        layer.update(context, layer).forEach(e => elements.push(e));
+    for (const current of config.layerHierarchies) {
+        const layer = current.layer;
+        // Initial call to get elements to update.
+        const elements = layer.update(context, layer);
 
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-
-            // update this element
-            const newElements = layer.update(context, layer, element);
-
-            for (const s of tree.children) {
-                updateElement(context, s.layer, element, s.children);
-            }
-
-            // append elements to update queue
-            if (newElements) {
-                newElements.forEach(e => elements.push(e));
-            }
+        if (elements) {
+            updateElements(context, current, elements);
         }
     }
 };

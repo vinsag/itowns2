@@ -7,7 +7,7 @@ import BoundingBox from '../Scene/BoundingBox';
 const cV = new THREE.Vector3();
 let vhMagnitudeSquared;
 let radius;
-const SSE_SUBDIVISION_THRESHOLD = 6.0;
+
 let preSSE;
 
 
@@ -93,17 +93,19 @@ function computeNodeSSE(camera, node) {
     return preSSE * (node.geometricError / distance);
 }
 
-export function globeSubdivisionControl(context, layer, node) {
-    if (node.level < 2) {
-        return true;
-    }
-    if (layer.maxLevel <= node.level) {
-        return false;
-    }
+export function globeSubdivisionControl(maxLevel, sseThreshold) {
+    return function _globeSubdivisionControl(context, layer, node) {
+        if (node.level < 2) {
+            return true;
+        }
+        if (layer.maxLevel <= node.level) {
+            return false;
+        }
 
-    const sse = computeNodeSSE(context.camera, node);
+        const sse = computeNodeSSE(context.camera, node);
 
-    return SSE_SUBDIVISION_THRESHOLD < sse;
+        return sseThreshold < sse;
+    };
 }
 
 // bbox longitude(0,360),latitude(-90,90)

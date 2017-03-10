@@ -146,7 +146,7 @@ TileMesh.prototype.getNodeAtLevel = function getNodeAtLevel(level) {
     if (this.parent.level === level) {
         return this.parent;
     }
-    if (typeof(this.parent.getNodeAtLevel) !== 'function') {
+    if (typeof (this.parent.getNodeAtLevel) !== 'function') {
         return undefined;
     }
     return this.parent.getNodeAtLevel(level);

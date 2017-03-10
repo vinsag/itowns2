@@ -19,7 +19,6 @@ import { processTiledGeometryNode, initTiledGeometryLayer } from '../../../../Pr
 import { updateLayeredMaterialNodeImagery, updateLayeredMaterialNodeElevation, initNewNode } from '../../../../Process/LayeredMaterialNodeProcessing';
 import { globeCulling, preGlobeUpdate, globeSubdivisionControl, globeSchemeTileWMTS, globeSchemeTile1 } from '../../../../Process/GlobeTileProcessing';
 import BuilderEllipsoidTile from '../../../../Globe/BuilderEllipsoidTile';
-import TileMesh from '../../../../Globe/TileMesh';
 import Atmosphere from '../../../../Globe/Atmosphere';
 import Clouds from '../../../../Globe/Clouds';
 import CoordStars from '../../../../Core/Geographic/CoordStars';
@@ -88,9 +87,11 @@ function preprocessLayer(layer, provider) {
  * Add the geometry layer to the scene.
  */
 ApiGlobe.prototype.addGeometryLayer = function addGeometryLayer(layer, parentLayerId) {
+    layer.protocol = 'tile';
+
     preprocessLayer(layer, this.scene.scheduler.getProtocolProvider(layer.protocol));
 
-    this.scene.configuration.addLayer(layer, parentLayerId);
+    this.scene.configuration.attach(layer, parentLayerId);
 
     const threejsLayer = this.scene.getUniqueThreejsLayer();
     this.scene.configuration.setLayerAttribute(layer.id, 'type', 'geometry');
@@ -113,7 +114,7 @@ ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer, parentLayer
     // assume all imageryLayer for globe use LayeredMaterial
     layer.update = updateLayeredMaterialNodeImagery;
 
-    this.scene.configuration.addLayer(layer, parentLayerId);
+    this.scene.configuration.attach(layer, parentLayerId);
     this.scene.configuration.setLayerAttribute(layer.id, 'type', 'color');
     this.scene.configuration.setLayerAttribute(layer.id, 'frozen', false);
     this.scene.configuration.setLayerAttribute(layer.id, 'visible', true);
@@ -169,7 +170,7 @@ ApiGlobe.prototype.addElevationLayer = function addElevationLayer(layer, parentL
     // assume all imageryLayer for globe use LayeredMaterial
     layer.update = updateLayeredMaterialNodeElevation;
 
-    this.scene.configuration.addLayer(layer, parentLayerId);
+    this.scene.configuration.attach(layer, parentLayerId);
     this.scene.configuration.setLayerAttribute(layer.id, 'type', 'elevation');
     this.scene.configuration.setLayerAttribute(layer.id, 'frozen', false);
 
@@ -393,25 +394,22 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(globeLayerId, co
         });
     };
 
+    const SSE_SUBDIVISION_THRESHOLD = 6.0;
+
+
     // init globe layer with default parameter
     const wgs84TileLayer = {
-        // layer base options
-        protocol: 'tile',
+        // layer options
         id: globeLayerId,
-        preUpdate: (context, layer) => preGlobeUpdate(context, layer),
-        update: (context, layer, node) => updateTreeLayer(context, layer, node),
-        // options for 'tile' protocol
-        nodeType: TileMesh,
-        builder: new BuilderEllipsoidTile(new Projection()),
-        // options for tree-based layer
-        initLevel0Nodes: initTiledGeometryLayer(),
-        processNode: processTiledGeometryNode,
-        // options for tilegeometry
-        maxLevel: 18,
-        schemeTile: globeSchemeTileWMTS(globeSchemeTile1),
-        cullingTest: globeCulling,
-        initNewNode: nodeInitFn,
-        mustSubdivide: globeSubdivisionControl,
+        preUpdate: preGlobeUpdate,
+        update: updateTreeLayer(
+                    initTiledGeometryLayer(globeSchemeTileWMTS(globeSchemeTile1)),
+                    processTiledGeometryNode(
+                    globeCulling,
+                    globeSubdivisionControl(18, SSE_SUBDIVISION_THRESHOLD),
+                    nodeInitFn)),
+        // provider options
+        builder: new BuilderEllipsoidTile(),
     };
 
     this.addGeometryLayer(wgs84TileLayer);

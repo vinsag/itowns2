@@ -15,6 +15,7 @@
 
 import Provider from './Provider';
 import TileGeometry from '../../../Globe/TileGeometry';
+import TileMesh from '../../../Globe/TileMesh';
 
 function TileProvider() {
     Provider.call(this, null);
@@ -38,7 +39,7 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
 
     const geometry = new TileGeometry(params, command.layer.builder);
 
-    var tile = new command.type(geometry, params);
+    var tile = new TileMesh(geometry, params);
 
     tile.layer = command.layer.id;
     tile.layers.set(command.threejsLayer);
