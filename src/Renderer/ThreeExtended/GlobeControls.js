@@ -478,18 +478,27 @@ function GlobeControls(camera, domElement, engine) {
         }
     };
 
-    var getPickingPosition = (function getGetPickingPositionFn() {
-        var engineGfx = engine;
-        var position;
+    const getPickingPosition = (function getGetPickingPositionFn(pickingHelper) {
+        const engineGfx = engine;
+        let position;
 
-        return function getPickingPosition(coords)
-        {
+        return function getPickingPosition(coords) {
+            if (enableTargetHelper) {
+                pickingHelper.visible = false;
+                cameraTargetOnGlobe.visible = false;
+            }
+
             position = engineGfx.getPickingPositionFromDepth(coords);
             engineGfx.renderScene();
 
+            if (enableTargetHelper) {
+                pickingHelper.visible = true;
+                cameraTargetOnGlobe.visible = true;
+            }
+
             return position;
         };
-    }());
+    }(this.pickingHelper));
 
     // introduction collision
     // Not use for the moment
@@ -530,6 +539,7 @@ function GlobeControls(camera, domElement, engine) {
         } else if (state === CONTROL_STATE.PAN) {
             this.camera.position.add(panVector);
             movingCameraTargetOnGlobe.add(panVector);
+            this.camera.up.copy(movingCameraTargetOnGlobe.clone().normalize());
         // PANORAMIC
         // Move target camera
         } else if (state === CONTROL_STATE.PANORAMIC) {
@@ -669,6 +679,9 @@ function GlobeControls(camera, domElement, engine) {
         spherical.setFromVector3(offset);
         state = CONTROL_STATE.NONE;
         lastRotation = [];
+        if (enableTargetHelper) {
+            this.dispatchEvent(this.changeEvent);
+        }
 
         this.dispatchEvent({
             type: 'camera-target-updated',
