@@ -691,7 +691,7 @@ ApiGlobe.prototype.setRange = function setRange(pRange, isAnimated) {
 
     return this.scene.currentControls().setRange(pRange, isAnimated).then(() => {
         this.scene.notifyChange(1);
-        this.setSceneLoaded().then(() => {
+        return this.setSceneLoaded().then(() => {
             this.scene.currentControls().updateCameraTransformation();
             this.viewerDiv.dispatchEvent(eventRange);
         });
