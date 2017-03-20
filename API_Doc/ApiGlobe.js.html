@@ -81,33 +81,6 @@ function ApiGlobe() {
 ApiGlobe.prototype.constructor = ApiGlobe;
 
 /**
- * @param Command
- */
-ApiGlobe.prototype.add = function add(/* Command*/) {
-    // TODO: Implement Me
-
-};
-
-/**
- * @param commandTemplate
- */
-ApiGlobe.prototype.createCommand = function createCommand(/* commandTemplate*/) {
-    // TODO: Implement Me
-
-};
-
-/**
- */
-ApiGlobe.prototype.execute = function execute() {
-    // TODO: Implement Me
-
-};
-
-ApiGlobe.prototype.getProtocolProvider = function getProtocolProvider(protocol) {
-    return this.scene.scheduler.getProtocolProvider(protocol);
-};
-
-/**
  * This function gives a chance to the matching provider to pre-process some
  * values for a layer.
  */
@@ -411,11 +384,6 @@ ApiGlobe.prototype.update = function update() {
     this.scene.notifyChange(0, true);
 };
 
-ApiGlobe.prototype.showClouds = function showClouds(value, satelliteAnimation) {
-    this.scene.getMap().showClouds(value, satelliteAnimation);
-    this.scene.renderScene3D();
-};
-
 ApiGlobe.prototype.setRealisticLightingOn = function setRealisticLightingOn(value) {
     this.scene.setLightingPos();
     this.scene.getMap().setRealisticLightingOn(value);
@@ -441,14 +409,6 @@ ApiGlobe.prototype.setLayerVisibility = function setLayerVisibility(id, visible)
     this.viewerDiv.dispatchEvent(eventLayerChangedVisible);
 };
 
-ApiGlobe.prototype.animateTime = function animateTime(value) {
-    this.scene.animateTime(value);
-};
-
-ApiGlobe.prototype.orbit = function orbit(value) {
-    this.scene.orbit(value);
-};
-
 /**
  * Sets the opacity of a layer. If the layer is not visible in the scene, this function will no effect until the layer becomes visible.
  * @constructor
@@ -462,10 +422,6 @@ ApiGlobe.prototype.setLayerOpacity = function setLayerOpacity(id, opacity) {
     eventLayerChangedOpacity.layerId = id;
     eventLayerChangedOpacity.opacity = opacity;
     this.viewerDiv.dispatchEvent(eventLayerChangedOpacity);
-};
-
-ApiGlobe.prototype.setStreetLevelImageryOn = function setStreetLevelImageryOn(value) {
-    this.scene.setStreetLevelImageryOn(value);
 };
 
 /**
@@ -670,12 +626,6 @@ ApiGlobe.prototype.resetHeading = function resetHeading(isAnimated) {
  * @param {Position} Second - Position.
  * @return {Number} distance
  */
-
-ApiGlobe.prototype.computeDistance = function computeDistance(p1, p2) {
-    return this.scene.getEllipsoid().computeDistance(
-        new C.EPSG_4326(p1.lon, p1.lat, p1.alt),
-        new C.EPSG_4326(p2.lon, p2.lat, p2.alt));
-};
 
 ApiGlobe.prototype.setSceneLoaded = function setSceneLoaded() {
     sceneIsLoaded = false;
@@ -988,19 +938,6 @@ ApiGlobe.prototype.getLayerById = function getLayerById(pId) {
     return lc.find(l => l.id === pId);
 };
 
-
-ApiGlobe.prototype.selectNodeById = function selectNodeById(id) {
-    this.scene.selectNodeId(id);
-    this.scene.update();
-    this.scene.renderScene3D();
-};
-
-ApiGlobe.prototype.showKML = function showKML(value) {
-    this.scene.getMap().showKML(value);
-    this.scene.renderScene3D();
-};
-
-
 ApiGlobe.prototype.loadGPX = function loadGPX(url) {
     loadGpx(url).then((gpx) => {
         if (gpx) {
@@ -1010,7 +947,6 @@ ApiGlobe.prototype.loadGPX = function loadGPX(url) {
 
     this.scene.renderScene3D();
 };
-
 
 export default ApiGlobe;
 </code></pre>
@@ -1023,13 +959,13 @@ export default ApiGlobe;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="ApiGlobe_addElevationLayersFromJSON.html">addElevationLayersFromJSON</a></li><li><a href="ApiGlobe_addElevationLayersFromJSONArray.html">addElevationLayersFromJSONArray</a></li><li><a href="ApiGlobe_addEventListener.html">addEventListener</a></li><li><a href="ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="ApiGlobe_addImageryLayerFromJSON.html">addImageryLayerFromJSON</a></li><li><a href="ApiGlobe_addImageryLayersFromJSONArray.html">addImageryLayersFromJSONArray</a></li><li><a href="ApiGlobe_computeDistance.html">computeDistance</a></li><li><a href="ApiGlobe_createSceneGlobe.html">createSceneGlobe</a></li><li><a href="ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="ApiGlobe_getCenter.html">getCenter</a></li><li><a href="ApiGlobe_getHeading.html">getHeading</a></li><li><a href="ApiGlobe_getImageryLayers.html">getImageryLayers</a></li><li><a href="ApiGlobe_getMaxZoomLevel.html">getMaxZoomLevel</a></li><li><a href="ApiGlobe_getMinZoomLevel.html">getMinZoomLevel</a></li><li><a href="ApiGlobe_getRange.html">getRange</a></li><li><a href="ApiGlobe_getTilt.html">getTilt</a></li><li><a href="ApiGlobe_getZoomLevel.html">getZoomLevel</a></li><li><a href="ApiGlobe_getZoomScale.html">getZoomScale</a></li><li><a href="ApiGlobe_moveLayerToIndex.html">moveLayerToIndex</a></li><li><a href="ApiGlobe_pan.html">pan</a></li><li><a href="ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="ApiGlobe_removeEventListener.html">removeEventListener</a></li><li><a href="ApiGlobe_removeImageryLayer.html">removeImageryLayer</a></li><li><a href="ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="ApiGlobe_setAnimationEnabled.html">setAnimationEnabled</a></li><li><a href="ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="ApiGlobe_setCenter.html">setCenter</a></li><li><a href="ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="ApiGlobe_setHeading.html">setHeading</a></li><li><a href="ApiGlobe_setLayerOpacity.html">setLayerOpacity</a></li><li><a href="ApiGlobe_setLayerVisibility.html">setLayerVisibility</a></li><li><a href="ApiGlobe_setRange.html">setRange</a></li><li><a href="ApiGlobe_setTilt.html">setTilt</a></li><li><a href="ApiGlobe_setZoomLevel.html">setZoomLevel</a></li><li><a href="ApiGlobe_setZoomScale.html">setZoomScale</a></li></ul><h3>Global</h3><ul><li><a href="global.html#preprocessLayer">preprocessLayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ApiGlobe_addElevationLayer.html">addElevationLayer</a></li><li><a href="ApiGlobe_addElevationLayersFromJSON.html">addElevationLayersFromJSON</a></li><li><a href="ApiGlobe_addElevationLayersFromJSONArray.html">addElevationLayersFromJSONArray</a></li><li><a href="ApiGlobe_addEventListener.html">addEventListener</a></li><li><a href="ApiGlobe_addImageryLayer.html">addImageryLayer</a></li><li><a href="ApiGlobe_addImageryLayerFromJSON.html">addImageryLayerFromJSON</a></li><li><a href="ApiGlobe_addImageryLayersFromJSONArray.html">addImageryLayersFromJSONArray</a></li><li><a href="ApiGlobe_createSceneGlobe.html">createSceneGlobe</a></li><li><a href="ApiGlobe_getCameraLocation.html">getCameraLocation</a></li><li><a href="ApiGlobe_getCameraOrientation.html">getCameraOrientation</a></li><li><a href="ApiGlobe_getCenter.html">getCenter</a></li><li><a href="ApiGlobe_getHeading.html">getHeading</a></li><li><a href="ApiGlobe_getImageryLayers.html">getImageryLayers</a></li><li><a href="ApiGlobe_getMaxZoomLevel.html">getMaxZoomLevel</a></li><li><a href="ApiGlobe_getMinZoomLevel.html">getMinZoomLevel</a></li><li><a href="ApiGlobe_getRange.html">getRange</a></li><li><a href="ApiGlobe_getTilt.html">getTilt</a></li><li><a href="ApiGlobe_getZoomLevel.html">getZoomLevel</a></li><li><a href="ApiGlobe_getZoomScale.html">getZoomScale</a></li><li><a href="ApiGlobe_moveLayerToIndex.html">moveLayerToIndex</a></li><li><a href="ApiGlobe_pan.html">pan</a></li><li><a href="ApiGlobe_pickPosition.html">pickPosition</a></li><li><a href="ApiGlobe_removeEventListener.html">removeEventListener</a></li><li><a href="ApiGlobe_removeImageryLayer.html">removeImageryLayer</a></li><li><a href="ApiGlobe_resetHeading.html">resetHeading</a></li><li><a href="ApiGlobe_resetTilt.html">resetTilt</a></li><li><a href="ApiGlobe_setAnimationEnabled.html">setAnimationEnabled</a></li><li><a href="ApiGlobe_setCameraOrientation.html">setCameraOrientation</a></li><li><a href="ApiGlobe_setCenter.html">setCenter</a></li><li><a href="ApiGlobe_setCenterAdvanced.html">setCenterAdvanced</a></li><li><a href="ApiGlobe_setHeading.html">setHeading</a></li><li><a href="ApiGlobe_setLayerOpacity.html">setLayerOpacity</a></li><li><a href="ApiGlobe_setLayerVisibility.html">setLayerVisibility</a></li><li><a href="ApiGlobe_setRange.html">setRange</a></li><li><a href="ApiGlobe_setSceneLoaded.html">setSceneLoaded</a></li><li><a href="ApiGlobe_setTilt.html">setTilt</a></li><li><a href="ApiGlobe_setZoomLevel.html">setZoomLevel</a></li><li><a href="ApiGlobe_setZoomScale.html">setZoomScale</a></li></ul><h3>Global</h3><ul><li><a href="global.html#preprocessLayer">preprocessLayer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 17 2017 15:19:58 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Mar 20 2017 20:29:48 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>
