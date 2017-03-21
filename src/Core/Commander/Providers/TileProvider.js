@@ -12,7 +12,7 @@
  *
  *
  */
-
+import { Quaternion, Vector3 } from 'three';
 import Provider from './Provider';
 import Projection from '../../Geographic/Projection';
 import BuilderEllipsoidTile from '../../../Globe/BuilderEllipsoidTile';
@@ -41,6 +41,7 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
         bbox,
         level: (command.level === undefined) ? (parent.level + 1) : command.level,
         segment: 16,
+        transformation: undefined,
     };
 
     const geometry = new TileGeometry(params, this.builder);
@@ -50,18 +51,22 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
     tile.setUuid(this.nNode++);
     tile.link = parent.link;
     tile.geometricError = Math.pow(2, (18 - params.level));
+    tile.center = params.center.clone();
 
-    parent.worldToLocal(params.center);
 
     tile.position.copy(params.center);
+    tile.matrixAutoUpdate = false;
+    tile.matrixWorldNeedsUpdate = false;
+    tile.quaternion.copy(params.transformation.quaternion);
     tile.setVisibility(false);
-
-    parent.add(tile);
     tile.updateMatrix();
-    tile.updateMatrixWorld();
+
+    // ATTENTION La world matrix est calculer une fois pour toute ici -->
+    tile.updateMatrixWorld(true);
     tile.OBB().parent = tile;   // TODO: we should use tile.add(tile.OBB())
     tile.OBB().update();
 
+    parent.add(tile);
     return Promise.resolve(tile);
 };
 
