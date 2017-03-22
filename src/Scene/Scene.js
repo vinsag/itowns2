@@ -173,8 +173,6 @@ Scene.prototype.update = function update() {
 };
 
 Scene.prototype.step = function step() {
-    this.gfxEngine.camera.update();
-
     // update data-structure
     this.update();
 
