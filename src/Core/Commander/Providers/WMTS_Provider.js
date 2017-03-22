@@ -55,10 +55,6 @@ WMTS_Provider.prototype.customUrl = function customUrl(layer, url, tilematrix, r
     return urld;
 };
 
-WMTS_Provider.prototype.removeLayer = function removeLayer(/* idLayer*/) {
-
-};
-
 WMTS_Provider.prototype.preprocessDataLayer = function preprocessDataLayer(layer) {
     layer.fx = layer.fx || 0.0;
     if (layer.protocol === 'wmtsc') {

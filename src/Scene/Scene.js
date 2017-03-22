@@ -117,25 +117,25 @@ Scene.prototype.scheduleUpdate = function scheduleUpdate(forceRedraw) {
 };
 
 
-function updateElements(context, source, elements) {
+function updateElements(context, layerLink, elements) {
     for (const element of elements) {
         // layer's update function may return new element to update
-        const elems = source.layer.update(context, source.layer, element);
+        const elems = layerLink.layer.update(context, layerLink.layer, element);
         if (elems) {
             // recurse on new elements to update
             // (e.g if layer.update is updating a tree structure, each update
             // call may return the current element's children)
-            updateElements(context, source, elems);
+            updateElements(context, layerLink, elems);
         }
 
         // if there are connected layers...
-        if (source.links) {
-            for (const s of source.links) {
+        if (layerLink.nextLayerLinks) {
+            for (const link of layerLink.nextLayerLinks) {
                 // we update them as well
-                const linkElements = s.layer.update(context, s.layer, element);
+                const linkElements = link.layer.update(context, link.layer, element);
                 // and apply the same recursion logic
                 if (linkElements) {
-                    updateElements(context, s, linkElements);
+                    updateElements(context, link, linkElements);
                 }
             }
         }
@@ -143,8 +143,6 @@ function updateElements(context, source, elements) {
 }
 
 Scene.prototype.update = function update() {
-    this.gfxEngine.camera.update();
-
     // Browse Layer tree
     const config = this.configuration;
 
@@ -162,19 +160,24 @@ Scene.prototype.update = function update() {
         }
     });
 
-    // update layers
-    for (const current of config.layerHierarchies) {
-        const layer = current.layer;
+    // loop over layerChains
+    for (const layerLink of config.layerChains) {
+        const layer = layerLink.layer;
+
         // Initial call to get elements to update.
+        // elements is a generic name because its meaning is up to the layer
         const elements = layer.update(context, layer);
 
         if (elements) {
-            updateElements(context, current, elements);
+            updateElements(context, layerLink, elements);
         }
     }
 };
 
 Scene.prototype.step = function step() {
+    this.currentControls().updateCameraTransformation();
+    this.gfxEngine.camera.update();
+
     // update data-structure
     this.update();
 

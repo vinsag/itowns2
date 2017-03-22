@@ -119,7 +119,7 @@ ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer, parentLayer
     this.scene.configuration.setLayerAttribute(layer.id, 'frozen', false);
     this.scene.configuration.setLayerAttribute(layer.id, 'visible', true);
     this.scene.configuration.setLayerAttribute(layer.id, 'opacity', 1.0);
-    const colorLayerCount = this.scene.configuration.getLayers(l => this.scene.configuration.getLayerAttribute(l.id, 'type') === 'color').length;
+    const colorLayerCount = this.scene.configuration.getLayers((l,attr) => attr.type === 'color').length;
     this.scene.configuration.setLayerAttribute(layer.id, 'sequence', colorLayerCount);
 
     this.viewerDiv.dispatchEvent(eventLayerAdded);
@@ -264,7 +264,7 @@ ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newInde
  * @return     {boolean}  { description_of_the_return_value }
  */
 ApiGlobe.prototype.removeImageryLayer = function removeImageryLayer(id) {
-    if (this.scene.configuration.removeLayer(id)) {
+    if (this.scene.configuration.detach(id)) {
         this.scene.renderScene3D();
         eventLayerRemoved.layer = id;
         this.viewerDiv.dispatchEvent(eventLayerRemoved);
@@ -994,7 +994,7 @@ ApiGlobe.prototype.getLayersAttribution = function getLayersAttribution() {
 
 ApiGlobe.prototype.getLayers = function getLayers(type) {
     const config = this.scene.layersConfiguration;
-    return config.getLayers(layer => config.getLayerAttribute(layer.id, 'type') === type);
+    return config.getLayers((layer, attr) => attr.type === type);
 };
 
 /**

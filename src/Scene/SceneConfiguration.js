@@ -3,26 +3,43 @@
  * Layer's config is a simply JS object so it can store any kind of value.
  */
 
+/*
+    Layers are "something" that produce a visual result.
+    They're composed of an 'id' and an 'update' function. As they are plain JS objects they can have as much
+    properties as the user needs.
+
+    Layer can be chained. Connected layers will only get called if their ascendant returns something to update.
+    A chain link stores a layer and optionnal next links.
+
+    Some examples. If a user wants to:
+      - display a globe: he'll add a [geometry] layer, configured to produce ellispoid-based tiles
+      - display imagery from a WMTS server: she'll attach a [imagery] layer to the globe layer. This [imagery] layer will
+        download and apply image from the server.
+      - display WFS building: he'll add a [feature] layer, querying WFS server and instanciating 3d model
+      - change building color based on current time: she'll add a [processing] layer, attached to the 3d model layer
+*/
+
 function SceneConfiguration() {
-    this.layerHierarchies = [];
+    // layerChains stored the first layer links of each layer chain
+    this.layerChains = [];
 
     // layers state (visibility, opacity)
     this.layersState = {};
 }
 
 // Helper func to call fn() on each layer
-function _traverseLayers(fn, current) {
-    fn(current.layer);
-    for (const link of current.links) {
-        _traverseLayers(fn, link);
+function _traverseLayers(fn, link) {
+    fn(link.layer);
+    for (const lk of link.nextLayerLinks) {
+        _traverseLayers(fn, lk);
     }
 }
 
-// Helper func to call fn() on each stage of the pipeline
-function _traverseLinks(fn, current) {
-    fn(current);
-    for (const link of current.links) {
-        _traverseLinks(fn, link);
+// Helper func to call fn() on each link
+function _traverseLayerLinks(fn, link) {
+    fn(link);
+    for (const lk of link.nextLayerLinks) {
+        _traverseLayerLinks(fn, lk);
     }
 }
 
@@ -39,14 +56,14 @@ SceneConfiguration.prototype.attach = function attach(layer, parentLayerId) {
     }
 
     if (parentLayerId === undefined) {
-        this.layerHierarchies.push({ layer, links: [] });
+        this.layerChains.push({ layer, nextLayerLinks: [] });
     } else if (!(parentLayerId in this.layersState)) {
         throw new Error(`Cannot attach layer ${layer.id} to non-added layer ${parentLayerId}`);
     } else {
         // traverse stages and attach as a child of parentLayerId
-        this.traverseLinks((current) => {
-            if (current.layer.id === parentLayerId) {
-                current.links.push({ layer, links: [] });
+        this.traverseLayerLinks((link) => {
+            if (link.layer.id === parentLayerId) {
+                link.nextLayerLinks.push({ layer, nextLayerLinks: [] });
             }
         });
     }
@@ -54,19 +71,19 @@ SceneConfiguration.prototype.attach = function attach(layer, parentLayerId) {
     this.layersState[layer.id] = {};
 };
 
-SceneConfiguration.prototype.removeLayer = function removeLayer(id) {
+SceneConfiguration.prototype.detach = function detach(id) {
     if (this.layersState[id]) {
-        for (let i = 0; i < this.layerHierarchies.length; i++) {
-            const current = this.layerHierarchies[i];
-            if (current.layer.id === id) {
-                this.layerHierarchies.splice(i, 1);
+        for (let i = 0; i < this.layerChains.length; i++) {
+            const link = this.layerChains[i];
+            if (link.layer.id === id) {
+                this.layerChains.splice(i, 1);
                 break;
             }
         }
-        this.traverseLinks((current) => {
-            for (let i = 0; i < current.links.length; i++) {
-                if (current.links[i].layer.id === id) {
-                    current.links.splice(i, 1);
+        this.traverseLayerLinks((link) => {
+            for (let i = 0; i < link.nextLayerLinks.length; i++) {
+                if (link.nextLayerLinks[i].layer.id === id) {
+                    link.nextLayerLinks.splice(i, 1);
                 }
             }
         });
@@ -79,14 +96,14 @@ SceneConfiguration.prototype.removeLayer = function removeLayer(id) {
 };
 
 SceneConfiguration.prototype.traverseLayers = function traverseLayers(fn) {
-    for (const current of this.layerHierarchies) {
-        _traverseLayers(fn, current);
+    for (const firstLink of this.layerChains) {
+        _traverseLayers(fn, firstLink);
     }
 };
 
-SceneConfiguration.prototype.traverseLinks = function traverseLinks(fn) {
-    for (const root of this.layerHierarchies) {
-        _traverseLinks(fn, root);
+SceneConfiguration.prototype.traverseLayerLinks = function traverseLayerLinks(fn) {
+    for (const firstLink of this.layerChains) {
+        _traverseLayerLinks(fn, firstLink);
     }
 };
 
