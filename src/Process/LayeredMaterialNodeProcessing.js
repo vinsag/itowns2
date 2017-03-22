@@ -64,17 +64,13 @@ function initLayeredMaterialImageryLayer(node, imageryLayer) {
     node.layerUpdateState[imageryLayer.id].texturesCount = texturesCount;
 }
 
-export function initNewNode(context, layer, parent, node) {
+export function initNewNode(context, layer, parent, node, imageryLayers, elevationLayers) {
     const promises = [];
-
-    // TODO only get layers attached to this geometry layer
-    const imageryLayers = context.scene.configuration.getLayers((layer, attr) => attr.type == 'color');
 
     for (const imageryLayer of imageryLayers) {
         promises.push(_updateLayeredMaterialNodeImagery(context, imageryLayer, node, parent));
     }
 
-    const elevationLayers = context.scene.configuration.getLayers((layer, attr) => attr.type == 'elevation');
     for (const elevationLayer of elevationLayers) {
         promises.push(_updateLayeredMaterialNodeElevation(context, elevationLayer, node, parent));
     }
@@ -89,8 +85,8 @@ export function updateLayeredMaterialNodeImagery(context, layer, node) {
 function _updateLayeredMaterialNodeImagery(context, layer, node, parent) {
     // upate params
     const layerIndex = node.materials[0].indexOfColorLayer(layer.id);
-    node.materials[0].setLayerVisibility(layerIndex, context.scene.configuration.getLayerAttribute(layer.id, 'visible'));
-    node.materials[0].setLayerOpacity(layerIndex, context.scene.configuration.getLayerAttribute(layer.id, 'opacity'));
+    node.materials[0].setLayerVisibility(layerIndex, layer.visible);
+    node.materials[0].setLayerOpacity(layerIndex, layer.opacity);
 
     const ts = Date.now();
 

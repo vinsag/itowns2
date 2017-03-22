@@ -6,6 +6,7 @@
 
 import CustomEvent from 'custom-event';
 import Scene from '../../../../Scene/Scene';
+import { GeometryLayer, ImageryLayers } from '../../../../Scene/Layer';
 import WMTS_Provider from '../../Providers/WMTS_Provider';
 import WMS_Provider from '../../Providers/WMS_Provider';
 import TileProvider from '../../Providers/TileProvider';
@@ -14,7 +15,6 @@ import { C, ellipsoidSizes } from '../../../Geographic/Coordinates';
 import Projection from '../../../Geographic/Projection';
 import Fetcher from '../../Providers/Fetcher';
 import { STRATEGY_MIN_NETWORK_TRAFFIC } from '../../../../Scene/LayerUpdateStrategy';
-import updateTreeLayer from '../../../../Process/TreeLayerProcessing';
 import { processTiledGeometryNode, initTiledGeometryLayer } from '../../../../Process/TiledNodeProcessing';
 import { updateLayeredMaterialNodeImagery, updateLayeredMaterialNodeElevation, initNewNode } from '../../../../Process/LayeredMaterialNodeProcessing';
 import { globeCulling, preGlobeUpdate, globeSubdivisionControl, globeSchemeTileWMTS, globeSchemeTile1 } from '../../../../Process/GlobeTileProcessing';
@@ -84,43 +84,23 @@ function preprocessLayer(layer, provider) {
 }
 
 /**
- * Add the geometry layer to the scene.
- */
-ApiGlobe.prototype.addGeometryLayer = function addGeometryLayer(layer, parentLayerId) {
-    layer.protocol = 'tile';
-
-    preprocessLayer(layer, this.scene.scheduler.getProtocolProvider(layer.protocol));
-
-    this.scene.configuration.attach(layer, parentLayerId);
-
-    const threejsLayer = this.scene.getUniqueThreejsLayer();
-    this.scene.configuration.setLayerAttribute(layer.id, 'type', 'geometry');
-    this.scene.configuration.setLayerAttribute(layer.id, 'threejsLayer', threejsLayer);
-
-    // enable by default
-    this.scene.currentCamera().camera3D.layers.enable(threejsLayer);
-
-    return layer;
-};
-
-/**
  * This function adds an imagery layer to the scene. The layer id must be unique. The protocol rules wich parameters are then needed for the function.
  * @constructor
  * @param {Layer} layer.
  */
-ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer, parentLayerId) {
+ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer) {
     preprocessLayer(layer, this.scene.scheduler.getProtocolProvider(layer.protocol));
 
     // assume all imageryLayer for globe use LayeredMaterial
     layer.update = updateLayeredMaterialNodeImagery;
 
-    this.scene.configuration.attach(layer, parentLayerId);
-    this.scene.configuration.setLayerAttribute(layer.id, 'type', 'color');
-    this.scene.configuration.setLayerAttribute(layer.id, 'frozen', false);
-    this.scene.configuration.setLayerAttribute(layer.id, 'visible', true);
-    this.scene.configuration.setLayerAttribute(layer.id, 'opacity', 1.0);
-    const colorLayerCount = this.scene.configuration.getLayers((l,attr) => attr.type === 'color').length;
-    this.scene.configuration.setLayerAttribute(layer.id, 'sequence', colorLayerCount);
+    this.scene._geometryLayers[0].attach(layer);
+    layer.type = 'color';
+    layer.frozen = false;
+    layer.visible = true;
+    layer.opacity = 1.0;
+    const colorLayerCount = this.scene.getAttachedLayers(l => l.type === 'color').length;
+    layer.sequence = colorLayerCount;
 
     this.viewerDiv.dispatchEvent(eventLayerAdded);
 
@@ -134,8 +114,8 @@ ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer, parentLayer
  * @return     {layer}  The Layer.
  */
 
-ApiGlobe.prototype.addImageryLayerFromJSON = function addImageryLayerFromJSON(url, parentLayerId) {
-    return Fetcher.json(url).then(result => this.addImageryLayer(result, parentLayerId));
+ApiGlobe.prototype.addImageryLayerFromJSON = function addImageryLayerFromJSON(url) {
+    return Fetcher.json(url).then(result => this.addImageryLayer(result));
 };
 
 /**
@@ -144,11 +124,11 @@ ApiGlobe.prototype.addImageryLayerFromJSON = function addImageryLayerFromJSON(ur
  * @param {Layers} array - An array of JSON files.
  * @return     {layer}  The Layers.
  */
-ApiGlobe.prototype.addImageryLayersFromJSONArray = function addImageryLayersFromJSONArray(urls, parentLayerId) {
+ApiGlobe.prototype.addImageryLayersFromJSONArray = function addImageryLayersFromJSONArray(urls) {
     const proms = [];
 
     for (const url of urls) {
-        proms.push(Fetcher.json(url).then(layer => this.addImageryLayer(layer, parentLayerId)));
+        proms.push(Fetcher.json(url).then(layer => this.addImageryLayer(layer)));
     }
 
     return Promise.all(proms);
@@ -164,15 +144,15 @@ ApiGlobe.prototype.addImageryLayersFromJSONArray = function addImageryLayersFrom
  * @param {Layer} layer.
  */
 
-ApiGlobe.prototype.addElevationLayer = function addElevationLayer(layer, parentLayerId) {
+ApiGlobe.prototype.addElevationLayer = function addElevationLayer(layer) {
     preprocessLayer(layer, this.scene.scheduler.getProtocolProvider(layer.protocol));
 
-    // assume all imageryLayer for globe use LayeredMaterial
+    // assume all elevation layer for globe use LayeredMaterial
     layer.update = updateLayeredMaterialNodeElevation;
 
-    this.scene.configuration.attach(layer, parentLayerId);
-    this.scene.configuration.setLayerAttribute(layer.id, 'type', 'elevation');
-    this.scene.configuration.setLayerAttribute(layer.id, 'frozen', false);
+    this.scene._geometryLayers[0].attach(layer);
+    layer.type = 'elevation';
+    layer.frozen = false;
 
     this.viewerDiv.dispatchEvent(eventLayerAdded);
 
@@ -191,8 +171,8 @@ ApiGlobe.prototype.addElevationLayer = function addElevationLayer(layer, parentL
 * @return     {layer}  The Layers.
  */
 
-ApiGlobe.prototype.addElevationLayersFromJSON = function addElevationLayersFromJSON(url, parentLayerId) {
-    return Fetcher.json(url).then(result => this.addElevationLayer(result, parentLayerId));
+ApiGlobe.prototype.addElevationLayersFromJSON = function addElevationLayersFromJSON(url) {
+    return Fetcher.json(url).then(result => this.addElevationLayer(result));
 };
 
 /**
@@ -207,38 +187,42 @@ ApiGlobe.prototype.addElevationLayersFromJSON = function addElevationLayersFromJ
  * @return     {layer}  The Layers.
  */
 
-ApiGlobe.prototype.addElevationLayersFromJSONArray = function addElevationLayersFromJSONArray(urls, parentLayerId) {
+ApiGlobe.prototype.addElevationLayersFromJSONArray = function addElevationLayersFromJSONArray(urls) {
     var proms = [];
 
     for (const url of urls) {
-        proms.push(Fetcher.json(url).then(layer => this.addElevationLayer(layer, parentLayerId)));
+        proms.push(Fetcher.json(url).then(layer => this.addElevationLayer(layer)));
     }
 
     return Promise.all(proms);
 };
 
-function updateLayersOrdering(layersConfiguration, globeLayerId) {
-    var sequence = layersConfiguration.getColorLayersIdOrderedBySequence();
+function updateLayersOrdering(globeLayer, imageryLayers) {
+    var sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
 
     var cO = function cO(object) {
         if (object.changeSequenceLayers)
             { object.changeSequenceLayers(sequence); }
     };
 
-    for (const node of layersConfiguration.getLayers(f => f.id === globeLayerId)[0].level0Nodes) {
+    for (const node of globeLayer.level0Nodes) {
         node.traverse(cO);
     }
 }
 
 ApiGlobe.prototype.moveLayerUp = function moveLayerUp(layerId) {
-    this.scene.configuration.moveLayerUp(layerId);
-    updateLayersOrdering(this.scene.configuration, this.globeLayerId);
+    const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
+    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    ImageryLayers.moveLayerUp(layer, imageryLayers);
+    updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
 };
 
 ApiGlobe.prototype.moveLayerDown = function moveLayerDown(layerId) {
-    this.scene.configuration.moveLayerDown(layerId);
-    updateLayersOrdering(this.scene.configuration, this.globeLayerId);
+    const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
+    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    ImageryLayers.moveLayerDown(layer, imageryLayers);
+    updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
 };
 
@@ -249,8 +233,10 @@ ApiGlobe.prototype.moveLayerDown = function moveLayerDown(layerId) {
  * @param      {number}  newIndex   The new index
  */
 ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newIndex) {
-    this.scene.configuration.moveLayerToIndex(layerId, newIndex);
-    updateLayersOrdering(this.scene.configuration, this.globeLayerId);
+    const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
+    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    ImageryLayers.moveLayerToIndex(layer, newIndex, imageryLayers);
+    updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
     eventLayerChangedIndex.layerIndex = newIndex;
     eventLayerChangedIndex.layerId = layerId;
@@ -264,7 +250,7 @@ ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newInde
  * @return     {boolean}  { description_of_the_return_value }
  */
 ApiGlobe.prototype.removeImageryLayer = function removeImageryLayer(id) {
-    if (this.scene.configuration.detach(id)) {
+    if (this.scene._geometryLayers[0].detach(id)) {
         this.scene.renderScene3D();
         eventLayerRemoved.layer = id;
         this.viewerDiv.dispatchEvent(eventLayerRemoved);
@@ -326,7 +312,7 @@ ApiGlobe.prototype.getMaxZoomLevel = function getMaxZoomLevel(index) {
  * @return     {layer}  The Layers.
  */
 ApiGlobe.prototype.getImageryLayers = function getImageryLayers() {
-    return this.scene.configuration.getLayers((layer, attributes) => attributes.type === 'color');
+    return this.scene.getAttachedLayers(layer => layer.type === 'color');
 };
 
 ApiGlobe.prototype.initProviders = function initProviders(scene) {
@@ -384,13 +370,14 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(globeLayerId, co
         this.sceneLoadedDeferred = defer();
     });
 
+    const scene = this.scene;
     const nodeInitFn = function nodeInitFn(context, layer, parent, node) {
-        return initNewNode(context, layer, parent, node).then(() => {
-            const lighting = context.scene.configuration.getLayerAttribute(
-                layer.id, 'lighting');
+        const imageryLayers = scene.getAttachedLayers(l => l.type === 'color');
+        const elevationLayers = scene.getAttachedLayers(l => l.type === 'elevation');
 
-            node.materials[0].setLightingOn(lighting.enable);
-            node.materials[0].uniforms.lightPosition.value = lighting.position;
+        return initNewNode(context, layer, parent, node, imageryLayers, elevationLayers).then(() => {
+            node.materials[0].setLightingOn(layer.lighting.enable);
+            node.materials[0].uniforms.lightPosition.value = layer.lighting.position;
         });
     };
 
@@ -398,27 +385,39 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(globeLayerId, co
 
 
     // init globe layer with default parameter
-    const wgs84TileLayer = {
-        // layer options
-        id: globeLayerId,
-        preUpdate: preGlobeUpdate,
-        update: updateTreeLayer(
-                    initTiledGeometryLayer(globeSchemeTileWMTS(globeSchemeTile1)),
-                    processTiledGeometryNode(
-                    globeCulling,
-                    globeSubdivisionControl(18, SSE_SUBDIVISION_THRESHOLD),
-                    nodeInitFn)),
-        // provider options
-        builder: new BuilderEllipsoidTile(),
+    const wgs84TileLayer = new GeometryLayer(globeLayerId);
+
+    const initLayer = initTiledGeometryLayer(globeSchemeTileWMTS(globeSchemeTile1));
+
+    wgs84TileLayer.preUpdate = (context, layer) => {
+        if (layer.level0Nodes === undefined) {
+            initLayer(context, layer);
+        }
+        preGlobeUpdate(context);
+        return layer.level0Nodes;
+    };
+    wgs84TileLayer.update =
+        processTiledGeometryNode(
+            globeCulling,
+            globeSubdivisionControl(18, SSE_SUBDIVISION_THRESHOLD),
+            nodeInitFn);
+
+    // provider options
+    wgs84TileLayer.builder = new BuilderEllipsoidTile();
+
+    this.scene.addGeometryLayer(wgs84TileLayer);
+
+    const threejsLayer = this.scene.getUniqueThreejsLayer();
+    wgs84TileLayer.type = 'geometry';
+    wgs84TileLayer.protocol = 'tile';
+    wgs84TileLayer.threejsLayer = 'threejsLayer';
+    wgs84TileLayer.lighting = {
+        enable: false,
+        position: { x: -0.5, y: 0.0, z: 1.0 },
     };
 
-    this.addGeometryLayer(wgs84TileLayer);
-
-    this.scene.configuration.setLayerAttribute(wgs84TileLayer.id,
-        'lighting', {
-            enable: false,
-            position: { x: -0.5, y: 0.0, z: 1.0 },
-        });
+    // enable by default
+    this.scene.currentCamera().camera3D.layers.enable(threejsLayer);
 
     this.atmosphere = new Atmosphere();
     this.clouds = new Clouds();
@@ -431,8 +430,7 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(globeLayerId, co
     this.scene.gfxEngine.scene3D.add(this.atmosphere);
 
     // enable only globe-rendering when performing picking
-    this.scene.currentControls().controlsActiveLayers = 1 <<
-        this.scene.configuration.getLayerAttribute(wgs84TileLayer.id, 'threejsLayer');
+    this.scene.currentControls().controlsActiveLayers = 1 << wgs84TileLayer.threejsLayer;
 
     return wgs84TileLayer;
 };
@@ -446,8 +444,7 @@ ApiGlobe.prototype.setRealisticLightingOn = function setRealisticLightingOn(valu
 
     this.lightingPos = coSun.normalize();
 
-    const lighting = this.scene.configuration.getLayerAttribute(
-        this.globeLayerId, 'lighting');
+    const lighting = this.scene._geometryLayers[0].lighting;
     lighting.enable = value;
     lighting.position = coSun;
 
@@ -468,20 +465,19 @@ ApiGlobe.prototype.setRealisticLightingOn = function setRealisticLightingOn(valu
  * @params {visible} boolean.
  */
 
-ApiGlobe.prototype.setLayerVisibility = function setLayerVisibility(id, visible) {
-    this.scene.configuration.setLayerAttribute(id, 'visible', visible);
+ApiGlobe.prototype.setLayerVisibility = function setLayerVisibility(layer, visible) {
+    layer.visible = visible;
 
-    const threejsLayer = this.scene.configuration.getLayerAttribute(id, 'threejsLayer');
-    if (threejsLayer != undefined) {
+    if (layer.threejsLayer != undefined) {
         if (visible) {
-            this.scene.camera.camera3D.layers.enable(threejsLayer);
+            this.scene.camera.camera3D.layers.enable(layer.threejsLayer);
         } else {
-            this.scene.camera.camera3D.layers.disable(threejsLayer);
+            this.scene.camera.camera3D.layers.disable(layer.threejsLayer);
         }
     }
 
     this.scene.notifyChange(0, true);
-    eventLayerChangedVisible.layerId = id;
+    eventLayerChangedVisible.layerId = layer.id;
     eventLayerChangedVisible.visible = visible;
     this.viewerDiv.dispatchEvent(eventLayerChangedVisible);
 };
@@ -493,10 +489,10 @@ ApiGlobe.prototype.setLayerVisibility = function setLayerVisibility(id, visible)
  * @params {visible} boolean.
  */
 
-ApiGlobe.prototype.setLayerOpacity = function setLayerOpacity(id, opacity) {
-    this.scene.configuration.setLayerAttribute(id, 'opacity', opacity);
+ApiGlobe.prototype.setLayerOpacity = function setLayerOpacity(layer, opacity) {
+    layer.opacity = opacity;
     this.scene.notifyChange(0, true);
-    eventLayerChangedOpacity.layerId = id;
+    eventLayerChangedOpacity.layerId = layer.id;
     eventLayerChangedOpacity.opacity = opacity;
     this.viewerDiv.dispatchEvent(eventLayerChangedOpacity);
 };

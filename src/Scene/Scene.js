@@ -11,7 +11,6 @@ import c3DEngine from '../Renderer/c3DEngine';
 import Scheduler from '../Core/Commander/Scheduler';
 import CoordStars from '../Core/Geographic/CoordStars';
 import StyleManager from './Description/StyleManager';
-import LayersConfiguration from './SceneConfiguration';
 
 var instanceScene = null;
 
@@ -45,7 +44,8 @@ function Scene(positionCamera, size, viewerDiv, debugMode, gLDebug) {
 
     this.viewerDiv = viewerDiv;
     this.renderingState = RENDERING_PAUSED;
-    this.configuration = new LayersConfiguration();
+
+    this._geometryLayers = [];
 
     this.nextThreejsLayer = 0;
 }
@@ -116,36 +116,43 @@ Scene.prototype.scheduleUpdate = function scheduleUpdate(forceRedraw) {
     }
 };
 
+Scene.prototype.addGeometryLayer = function addGeometryLayer(layer) {
+    if (typeof (layer.update) !== 'function') {
+        throw new Error('Cant add GeometryLayer: missing a update function');
+    }
+    if (typeof (layer.preUpdate) !== 'function') {
+        throw new Error('Cant add GeometryLayer: missing a preUpdate function');
+    }
+    this._geometryLayers.push(layer);
+};
 
-function updateElements(context, layerLink, elements) {
-    for (const element of elements) {
-        // layer's update function may return new element to update
-        const elems = layerLink.layer.update(context, layerLink.layer, element);
-        if (elems) {
-            // recurse on new elements to update
-            // (e.g if layer.update is updating a tree structure, each update
-            // call may return the current element's children)
-            updateElements(context, layerLink, elems);
-        }
-
-        // if there are connected layers...
-        if (layerLink.nextLayerLinks) {
-            for (const link of layerLink.nextLayerLinks) {
-                // we update them as well
-                const linkElements = link.layer.update(context, link.layer, element);
-                // and apply the same recursion logic
-                if (linkElements) {
-                    updateElements(context, link, linkElements);
-                }
+Scene.prototype.getAttachedLayers = function getAttachedLayers(filter) {
+    const result = [];
+    for (const geometryLayer of this._geometryLayers) {
+        for (const attached of geometryLayer._attachedLayers) {
+            if (!filter || filter(attached, geometryLayer)) {
+                result.push(attached);
             }
+        }
+    }
+    return result;
+};
+
+function updateElement(context, geometryLayer, element) {
+    const newElementsToUpdate = geometryLayer.update(context, geometryLayer, element);
+
+    for (const attachedLayer of geometryLayer._attachedLayers) {
+        attachedLayer.update(context, attachedLayer, element);
+    }
+
+    if (newElementsToUpdate) {
+        for (const newElement of newElementsToUpdate) {
+            updateElement(context, geometryLayer, newElement);
         }
     }
 }
 
 Scene.prototype.update = function update() {
-    // Browse Layer tree
-    const config = this.configuration;
-
     // TODO?
     const context = {
         camera: this.gfxEngine.camera,
@@ -153,23 +160,11 @@ Scene.prototype.update = function update() {
         scene: this,
     };
 
-    // call pre-update on all layers
-    config.traverseLayers((layer) => {
-        if (layer.preUpdate) {
-            layer.preUpdate(context, layer);
-        }
-    });
+    for (const geometryLayer of this._geometryLayers) {
+        const elementsToUpdate = geometryLayer.preUpdate(context, geometryLayer);
 
-    // loop over layerChains
-    for (const layerLink of config.layerChains) {
-        const layer = layerLink.layer;
-
-        // Initial call to get elements to update.
-        // elements is a generic name because its meaning is up to the layer
-        const elements = layer.update(context, layer);
-
-        if (elements) {
-            updateElements(context, layerLink, elements);
+        for (const element of elementsToUpdate) {
+            updateElement(context, geometryLayer, element);
         }
     }
 };

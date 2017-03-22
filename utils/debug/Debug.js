@@ -206,9 +206,9 @@ function Debug(scene) {
 
     // tiles outline
     gui.add(state, 'showOutline').name('Show tiles outline').onChange((newValue) => {
-        scene.configuration.traverseLayers((layer) => {
-            layer.showOutline = newValue;
-        });
+        for (const geometryLayer of scene._geometryLayers) {
+            geometryLayer.showOutline = newValue;
+        }
         applyToNodeFirstMaterial((material) => {
             material.uniforms.showOutline = { value: newValue };
             material.needsUpdate = true;
@@ -217,9 +217,9 @@ function Debug(scene) {
 
     // tiles wireframe
     gui.add(state, 'wireframe').name('Wireframe').onChange((newValue) => {
-        scene.configuration.traverseLayers((layer) => {
-            layer.wireframe = newValue;
-        });
+        for (const geometryLayer of scene._geometryLayers) {
+            geometryLayer.wireframe = newValue;
+        }
         applyToNodeFirstMaterial((material) => {
             material.wireframe = newValue;
         });
