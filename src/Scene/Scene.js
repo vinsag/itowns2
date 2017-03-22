@@ -111,6 +111,9 @@ Scene.prototype.scheduleUpdate = function scheduleUpdate(forceRedraw) {
 
     if (this.renderingState !== RENDERING_ACTIVE) {
         this.renderingState = RENDERING_ACTIVE;
+        if (__DEBUG__) {
+            document.title += ' ⌛'
+        }
 
         requestAnimationFrame(() => { this.step(); });
     }
@@ -188,6 +191,10 @@ Scene.prototype.step = function step() {
 
         // reset rendering flag
         this.renderingState = RENDERING_PAUSED;
+
+        if (__DEBUG__) {
+            document.title = document.title.substr(0, document.title.length - 2);
+        }
     } else {
         const ts = Date.now();
 

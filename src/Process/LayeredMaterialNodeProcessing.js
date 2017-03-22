@@ -109,6 +109,9 @@ function _updateLayeredMaterialNodeImagery(context, layer, node, parent) {
 
     // TODO: determine force given node state?
     if (!force) {
+        if (!node.materials[0].visible) {
+            return;
+        }
         // does this tile needs a new texture?
         if (!node.isColorLayerDownscaled(layer.id)) {
             return;
@@ -245,6 +248,9 @@ function _updateLayeredMaterialNodeElevation(context, layer, node, parent) {
     }
 
     if (!node.layerUpdateState[layer.id].canTryUpdate(ts)) {
+        return;
+    }
+    if (!node.materials[0].visible) {
         return;
     }
 

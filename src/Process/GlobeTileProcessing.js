@@ -95,7 +95,7 @@ function computeNodeSSE(camera, node) {
 
 export function globeSubdivisionControl(maxLevel, sseThreshold) {
     return function _globeSubdivisionControl(context, layer, node) {
-        if (node.level < 2) {
+        if (node.level <= 2) {
             return true;
         }
         if (layer.maxLevel <= node.level) {
