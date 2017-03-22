@@ -28,7 +28,7 @@ function nodeCommandQueuePriorityFunction(node) {
         return 1000 - node.level;
     } else if (node.isDisplayed()) {
         // Then prefer displayed() node over non-displayed one
-        return 100;
+        return 100 + node.level;
     } else {
         return 10;
     }
@@ -250,7 +250,7 @@ function _updateLayeredMaterialNodeElevation(context, layer, node, parent) {
     if (!node.layerUpdateState[layer.id].canTryUpdate(ts)) {
         return;
     }
-    if (!node.materials[0].visible) {
+    if (!force && !node.materials[0].visible) {
         return;
     }
 

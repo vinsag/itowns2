@@ -112,7 +112,7 @@ Scene.prototype.scheduleUpdate = function scheduleUpdate(forceRedraw) {
     if (this.renderingState !== RENDERING_ACTIVE) {
         this.renderingState = RENDERING_ACTIVE;
         if (__DEBUG__) {
-            document.title += ' ⌛'
+            document.title += ' ⌛';
         }
 
         requestAnimationFrame(() => { this.step(); });
@@ -173,7 +173,6 @@ Scene.prototype.update = function update() {
 };
 
 Scene.prototype.step = function step() {
-    this.currentControls().updateCameraTransformation();
     this.gfxEngine.camera.update();
 
     // update data-structure
