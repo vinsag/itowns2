@@ -228,6 +228,8 @@ function _updateLayeredMaterialNodeElevation(context, layer, node, parent) {
     // We don't care about layer status (isLayerFrozen) or limits (tileInsideLimit) because
     // we simply want to use ancestor's texture with a different pitch
     if (currentElevation == -1) {
+        // FIXME: this function should use 'layer' to find an ancestor for the considered elevation
+        //        layer of looking in all elevation layer
         ancestor = findAncestorWithValidTextureForLayer(node, parent || node.parent, l_ELEVATION);
     }
 
@@ -265,15 +267,14 @@ function _updateLayeredMaterialNodeElevation(context, layer, node, parent) {
         return;
     }
 
-    // ancestor is not enough: we also need to know from which layer we're going to request the elevation texture (see how this is done for color texture).
-    // Right now this is done in the `for` loop below but this is hacky because there's no real warranty that bestLayer and ancestor really match.
-    // FIXME: we need to be able to set both ancestor and bestLayer at the same time
-    if (ancestor === null) {
+    // if we're looking for a target level < to us => search a parent with this texture
+    if (ancestor === null && targetLevel != node.level) {
         ancestor = node.getNodeAtLevel(targetLevel);
     }
 
 
     node.layerUpdateState[layer.id].newTry();
+
 
     const command = {
         /* mandatory */
@@ -295,7 +296,11 @@ function _updateLayeredMaterialNodeElevation(context, layer, node, parent) {
             }
 
             if (terrain.texture) {
-                terrain.texture.level = (ancestor || node).level;
+                // If we used a texture from parent, use it's elevation level
+                // otherwise it's ours
+                terrain.texture.level = ancestor ?
+                    ancestor.materials[RendererConstant.FINAL].getElevationLayerLevel() :
+                    node.level;
             }
 
             if (terrain.max === undefined) {
