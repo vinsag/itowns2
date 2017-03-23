@@ -737,6 +737,7 @@ ApiGlobe.prototype.getZoomScale = function getZoomScale(pitch) {
     const center = this.scene.currentControls().getCameraTargetPosition();
     const rayon = center.length();
     const range = center.distanceTo(camera.camera3D.position);
+
     // compute distance camera/globe's center
     const distance = rayon + range;
     // Three points C,G and S
@@ -766,6 +767,8 @@ ApiGlobe.prototype.getZoomScale = function getZoomScale(pitch) {
         projection = 2.0 * rayon * Math.sin(phi + alpha);
     }
 
+    // meme resultat et beaucoup plus simple
+    // const unitProjection = camera.height / (2 * range * Math.tan(alpha));
     const zoomScale = camera.height * pitch / projection;
 
     return zoomScale;

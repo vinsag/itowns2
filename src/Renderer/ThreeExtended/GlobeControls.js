@@ -12,7 +12,8 @@ import Sphere from '../../Core/Math/Sphere';
 import AnimationPlayer, { Animation, AnimatedExpression } from '../../Scene/AnimationPlayer';
 import { C } from '../../Core/Geographic/Coordinates';
 
-var selectClick = new CustomEvent('selectClick');
+const selectClick = new CustomEvent('selectClick');
+const eventRange = new CustomEvent('rangeChanged');
 
 // TODO:
 // Recast touch for globe
@@ -449,6 +450,7 @@ function GlobeControls(camera, domElement, engine) {
 
         if (this.camera instanceof THREE.PerspectiveCamera) {
             orbit.scale /= dollyScale;
+            domElement.dispatchEvent(eventRange);
         } else if (this.camera instanceof THREE.OrthographicCamera) {
             this.camera.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.camera.zoom * dollyScale));
             this.camera.updateProjectionMatrix();
@@ -467,6 +469,7 @@ function GlobeControls(camera, domElement, engine) {
 
         if (this.camera instanceof THREE.PerspectiveCamera) {
             orbit.scale *= dollyScale;
+            domElement.dispatchEvent(eventRange);
         } else if (this.camera instanceof THREE.OrthographicCamera) {
             this.camera.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.camera.zoom / dollyScale));
             this.camera.updateProjectionMatrix();
@@ -667,6 +670,7 @@ function GlobeControls(camera, domElement, engine) {
         offset.copy(this.camera.position);
         offset.applyMatrix4(cameraTargetOnGlobe.matrixWorldInverse);
         spherical.setFromVector3(offset);
+        domElement.dispatchEvent(eventRange);
         state = CONTROL_STATE.NONE;
         lastRotation = [];
 
