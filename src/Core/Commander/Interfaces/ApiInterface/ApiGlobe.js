@@ -197,7 +197,7 @@ ApiGlobe.prototype.addElevationLayersFromJSONArray = function addElevationLayers
     return Promise.all(proms);
 };
 
-function updateLayersOrdering(globeLayer, imageryLayers) {
+function updateLayersOrdering(geometryLayer, imageryLayers) {
     var sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
 
     var cO = function cO(object) {
@@ -205,14 +205,14 @@ function updateLayersOrdering(globeLayer, imageryLayers) {
             { object.changeSequenceLayers(sequence); }
     };
 
-    for (const node of globeLayer.level0Nodes) {
+    for (const node of geometryLayer.level0Nodes) {
         node.traverse(cO);
     }
 }
 
 ApiGlobe.prototype.moveLayerUp = function moveLayerUp(layerId) {
     const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
-    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    const layer = this.getLayerById(layerId);
     ImageryLayers.moveLayerUp(layer, imageryLayers);
     updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
@@ -220,7 +220,7 @@ ApiGlobe.prototype.moveLayerUp = function moveLayerUp(layerId) {
 
 ApiGlobe.prototype.moveLayerDown = function moveLayerDown(layerId) {
     const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
-    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    const layer = this.getLayerById(layerId);
     ImageryLayers.moveLayerDown(layer, imageryLayers);
     updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
@@ -234,7 +234,7 @@ ApiGlobe.prototype.moveLayerDown = function moveLayerDown(layerId) {
  */
 ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newIndex) {
     const imageryLayers = this.scene.getAttachedLayers(l => l.type === 'color');
-    const layer = this.scene.getAttachedLayers(l => l.id == layerId)[0];
+    const layer = this.getLayerById(layerId);
     ImageryLayers.moveLayerToIndex(layer, newIndex, imageryLayers);
     updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
@@ -972,9 +972,8 @@ ApiGlobe.prototype.removeEventListenerLayerChanged = function removeEventListene
  */
 
 ApiGlobe.prototype.getLayersAttribution = function getLayersAttribution() {
-    const lc = this.scene.getMap().layersConfiguration;
     const map = new Map();
-    [...lc.getColorLayers(), ...lc.getElevationLayers()].forEach((l) => {
+    this.scene.getAttachedLayers().forEach((l) => {
         if (l.options.attribution) {
             map.set(l.options.attribution.name, l.options.attribution);
         }
@@ -989,8 +988,13 @@ ApiGlobe.prototype.getLayersAttribution = function getLayersAttribution() {
  */
 
 ApiGlobe.prototype.getLayers = function getLayers(type) {
-    const config = this.scene.layersConfiguration;
-    return config.getLayers((layer, attr) => attr.type === type);
+    if (type === undefined) {
+        return [...this.scene._geometryLayers, ...this.scene.getAttachedLayers()];
+    } else if (type == 'geometry') {
+        return this.scene._geometryLayers;
+    } else {
+        return this.scene.getAttachedLayers(l => l.type === type);
+    }
 };
 
 /**
@@ -999,8 +1003,16 @@ ApiGlobe.prototype.getLayers = function getLayers(type) {
  */
 
 ApiGlobe.prototype.getLayerById = function getLayerById(pId) {
-    const lc = this.scene.getMap().layersConfiguration.getLayers();
-    return lc.find(l => l.id === pId);
+    const att = this.scene.getAttachedLayers(l => l.id === pId);
+    if (att.length == 1) {
+        return att[0];
+    }
+    for (const geom of this.scene._geometryLayers) {
+        if (geom.id === pId) {
+            return geom;
+        }
+    }
+    throw new Error(`No layer with id = '${pId}' found`);
 };
 
 ApiGlobe.prototype.loadGPX = function loadGPX(url) {
