@@ -473,7 +473,7 @@ ApiGlobe.prototype.setRealisticLightingOn = function setRealisticLightingOn(valu
 /**
  * Sets the visibility of a layer. If the layer is not visible in the scene, this function will no effect until the camera looks at the layer.
  * @constructor
- * @param {id} string.
+ * @param {layer} a layer.
  * @params {visible} boolean.
  */
 
@@ -497,7 +497,7 @@ ApiGlobe.prototype.setLayerVisibility = function setLayerVisibility(layer, visib
 /**
  * Sets the opacity of a layer. If the layer is not visible in the scene, this function will no effect until the layer becomes visible.
  * @constructor
- * @param {id} string.
+ * @param {layer} a layer.
  * @params {visible} boolean.
  */
 
