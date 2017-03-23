@@ -141,22 +141,23 @@ Scene.prototype.getAttachedLayers = function getAttachedLayers(filter) {
     return result;
 };
 
-function updateElement(context, geometryLayer, element) {
-    const newElementsToUpdate = geometryLayer.update(context, geometryLayer, element);
-
-    for (const attachedLayer of geometryLayer._attachedLayers) {
-        attachedLayer.update(context, attachedLayer, element);
+function updateElements(context, geometryLayer, elements) {
+    if (!elements) {
+        return;
     }
+    for (const element of elements) {
+        // update element
+        const newElementsToUpdate = geometryLayer.update(context, geometryLayer, element);
 
-    if (newElementsToUpdate) {
-        for (const newElement of newElementsToUpdate) {
-            updateElement(context, geometryLayer, newElement);
+        // update attached layers
+        for (const attachedLayer of geometryLayer._attachedLayers) {
+            attachedLayer.update(context, attachedLayer, element);
         }
+        updateElements(context, geometryLayer, newElementsToUpdate);
     }
 }
 
 Scene.prototype.update = function update() {
-    // TODO?
     const context = {
         camera: this.gfxEngine.camera,
         scheduler: this.scheduler,
@@ -165,12 +166,10 @@ Scene.prototype.update = function update() {
 
     for (const geometryLayer of this._geometryLayers) {
         const elementsToUpdate = geometryLayer.preUpdate(context, geometryLayer);
-
-        for (const element of elementsToUpdate) {
-            updateElement(context, geometryLayer, element);
-        }
+        updateElements(context, geometryLayer, elementsToUpdate);
     }
 };
+
 
 Scene.prototype.step = function step() {
     // update data-structure
