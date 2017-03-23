@@ -3,6 +3,7 @@ import { chooseNextLevelToFetch } from '../Scene/LayerUpdateStrategy';
 import { l_ELEVATION, l_COLOR } from '../Renderer/LayeredMaterial';
 import LayerUpdateState from '../Scene/LayerUpdateState';
 import { CancelledCommandException } from '../Core/Commander/Scheduler';
+import { ImageryLayers } from '../Scene/Layer';
 
 function findAncestorWithValidTextureForLayer(node, parent, layerType, layer) {
     if (parent && parent.material && parent.material.getLayerLevel) {
@@ -75,7 +76,11 @@ export function initNewNode(context, layer, parent, node, imageryLayers, elevati
         promises.push(_updateLayeredMaterialNodeElevation(context, elevationLayer, node, parent));
     }
 
-    return Promise.all(promises).then(() => { node.loaded = true; });
+    return Promise.all(promises).then(() => {
+        const sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
+        node.changeSequenceLayers(sequence);
+        node.loaded = true;
+    });
 }
 
 export function updateLayeredMaterialNodeImagery(context, layer, node) {

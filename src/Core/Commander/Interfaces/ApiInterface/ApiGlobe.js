@@ -100,7 +100,7 @@ ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer) {
     layer.visible = true;
     layer.opacity = 1.0;
     const colorLayerCount = this.scene.getAttachedLayers(l => l.type === 'color').length;
-    layer.sequence = colorLayerCount;
+    layer.sequence = colorLayerCount - 1;
 
     this.viewerDiv.dispatchEvent(eventLayerAdded);
 
@@ -238,6 +238,7 @@ ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newInde
     ImageryLayers.moveLayerToIndex(layer, newIndex, imageryLayers);
     updateLayersOrdering(this.scene._geometryLayers[0], imageryLayers);
     this.scene.renderScene3D();
+
     eventLayerChangedIndex.layerIndex = newIndex;
     eventLayerChangedIndex.layerId = layerId;
     this.viewerDiv.dispatchEvent(eventLayerChangedIndex);
@@ -250,7 +251,18 @@ ApiGlobe.prototype.moveLayerToIndex = function moveLayerToIndex(layerId, newInde
  * @return     {boolean}  { description_of_the_return_value }
  */
 ApiGlobe.prototype.removeImageryLayer = function removeImageryLayer(id) {
-    if (this.scene._geometryLayers[0].detach(id)) {
+    const layer = this.getLayerById(id);
+    if (this.scene._geometryLayers[0].detach(layer)) {
+        var cO = function cO(object) {
+            if (object.removeColorLayer) {
+                object.removeColorLayer(layer.id);
+            }
+        };
+
+        for (const root of this.scene._geometryLayers[0].level0Nodes) {
+            root.traverse(cO);
+        }
+
         this.scene.renderScene3D();
         eventLayerRemoved.layer = id;
         this.viewerDiv.dispatchEvent(eventLayerRemoved);
