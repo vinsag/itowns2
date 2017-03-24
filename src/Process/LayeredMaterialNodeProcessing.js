@@ -76,6 +76,12 @@ export function initNewNode(context, layer, parent, node, imageryLayers, elevati
         promises.push(_updateLayeredMaterialNodeElevation(context, elevationLayer, node, parent));
     }
 
+    if (__DEBUG__) {
+        const geometryLayer = context.scene._geometryLayers[0];
+        node.material.uniforms.showOutline = { value: geometryLayer.showOutline || false };
+        node.material.wireframe = geometryLayer.wireframe || false;
+    }
+
     return Promise.all(promises).then(() => {
         const sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
         node.changeSequenceLayers(sequence);
