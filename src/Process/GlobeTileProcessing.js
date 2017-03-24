@@ -98,7 +98,7 @@ export function globeSubdivisionControl(maxLevel, sseThreshold) {
         if (node.level <= 2) {
             return true;
         }
-        if (layer.maxLevel <= node.level) {
+        if (maxLevel <= node.level) {
             return false;
         }
 
