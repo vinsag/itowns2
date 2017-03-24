@@ -65,11 +65,21 @@ function initLayeredMaterialImageryLayer(node, imageryLayer) {
     node.layerUpdateState[imageryLayer.id].texturesCount = texturesCount;
 }
 
-export function initNewNode(context, layer, parent, node, imageryLayers, elevationLayers) {
+export function initNewNode(context, geometryLayer, parent, node, imageryLayers, elevationLayers) {
     const promises = [];
 
+    // declare layers
     for (const imageryLayer of imageryLayers) {
-        promises.push(_updateLayeredMaterialNodeImagery(context, imageryLayer, node, parent));
+        initLayeredMaterialImageryLayer(node, imageryLayer);
+    }
+
+    // define sequence
+    const sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
+    node.changeSequenceLayers(sequence);
+
+    // init layer textures
+    for (const imageryLayer of imageryLayers) {
+        promises.push(_updateLayeredMaterialNodeImagery(context, imageryLayer, node, parent, true));
     }
 
     for (const elevationLayer of elevationLayers) {
@@ -77,14 +87,11 @@ export function initNewNode(context, layer, parent, node, imageryLayers, elevati
     }
 
     if (__DEBUG__) {
-        const geometryLayer = context.scene._geometryLayers[0];
         node.material.uniforms.showOutline = { value: geometryLayer.showOutline || false };
         node.material.wireframe = geometryLayer.wireframe || false;
     }
 
     return Promise.all(promises).then(() => {
-        const sequence = ImageryLayers.getColorLayersIdOrderedBySequence(imageryLayers);
-        node.changeSequenceLayers(sequence);
         node.loaded = true;
     });
 }
@@ -93,7 +100,7 @@ export function updateLayeredMaterialNodeImagery(context, layer, node) {
     _updateLayeredMaterialNodeImagery(context, layer, node);
 }
 
-function _updateLayeredMaterialNodeImagery(context, layer, node, parent) {
+function _updateLayeredMaterialNodeImagery(context, layer, node, parent, force) {
     // upate params
     const layerIndex = node.materials[0].indexOfColorLayer(layer.id);
     node.materials[0].setLayerVisibility(layerIndex, layer.visible);
@@ -107,11 +114,6 @@ function _updateLayeredMaterialNodeImagery(context, layer, node, parent) {
     // (see `subdivideNode`)
     if (!layer.tileInsideLimit(node, layer)) {
         return;
-    }
-
-    const force = node.layerUpdateState[layer.id] === undefined;
-    if (force) {
-        initLayeredMaterialImageryLayer(node, layer);
     }
 
     if (!node.layerUpdateState[layer.id].canTryUpdate(ts)) {
