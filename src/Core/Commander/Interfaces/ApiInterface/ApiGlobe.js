@@ -697,7 +697,8 @@ ApiGlobe.prototype.pan = function pan(pVector) {
  * @return     {number}  The zoom level.
  */
 ApiGlobe.prototype.getZoomLevel = function getZoomLevel() {
-    return this.scene.getMap().getZoomLevel();
+    const idNode = this.scene.gfxEngine.screenCoordsToNodeId();
+    return this.scene.getMap().getZoomLevelFromIdnode(idNode);
 };
 
 /**

@@ -202,12 +202,14 @@ Globe.prototype.removeColorLayer = function removeColorLayer(layer) {
     this.tiles.children[0].traverse(cO);
 };
 
-Globe.prototype.getZoomLevel = function getZoomLevel() {
+Globe.prototype.getZoomLevelFromIdnode = function getZoomLevelFromIdnode(id) {
     var cO = (function getCOFn() {
         var zoom = 0;
         return function cO(object) {
-            if (object) {
-                zoom = Math.max(zoom, object.level);
+            if (object && object.material.visible) {
+                if (object.id === id) {
+                    zoom = object.level;
+                }
             }
             return zoom;
         };
@@ -219,7 +221,12 @@ Globe.prototype.getZoomLevel = function getZoomLevel() {
 
 
 Globe.prototype.computeDistanceForZoomLevel = function computeDistanceForZoomLevel(zoom, camera) {
-    return camera.preSSE * Math.pow(this.tiles.minLevel, (this.tiles.maxLevel - zoom + 1)) / SSE_SUBDIVISION_THRESHOLD;
+    const delta = Math.PI / Math.pow(2, zoom - 1);
+    const chord = 2.0 * 6378137 * Math.sin(delta * 0.5);
+    const radius = chord * 0.5;
+    const error = radius / 256;
+    // return camera.preSSE * Math.pow(this.tiles.minLevel, (this.tiles.maxLevel - zoom + 1)) / SSE_SUBDIVISION_THRESHOLD;
+    return camera.preSSE * error / SSE_SUBDIVISION_THRESHOLD;
 };
 
 Globe.prototype.getTile = function getTile(coordinate) {
