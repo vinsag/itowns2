@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import NodeMesh from '../Renderer/NodeMesh';
 import LayeredMaterial, { l_ELEVATION } from '../Renderer/LayeredMaterial';
+import { SIZE_TEXTURE_TILE } from '../Core/Commander/Providers/WMTS_Provider';
 import GlobeDepthMaterial from '../Renderer/GlobeDepthMaterial';
 import MatteIdsMaterial from '../Renderer/MatteIdsMaterial';
 import RendererConstant from '../Renderer/RendererConstant';
@@ -155,6 +156,7 @@ TileMesh.prototype.setBBoxZ = function setBBoxZ(min, max) {
         var trans = this.normal.clone().setLength(delta.y);
 
         this.geometry.boundingSphere.radius = Math.sqrt(delta.x * delta.x + this.oSphere.radius * this.oSphere.radius);
+        this.geometricError = this.geometry.boundingSphere.radius / SIZE_TEXTURE_TILE;
         this.centerSphere = new THREE.Vector3().addVectors(this.oSphere.center, trans);
     }
 };

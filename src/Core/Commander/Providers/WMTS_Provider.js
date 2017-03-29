@@ -13,7 +13,7 @@ import IoDriver_XBIL from './IoDriver_XBIL';
 import Fetcher from './Fetcher';
 import CacheRessource from './CacheRessource';
 
-const SIZE_TEXTURE_TILE = 256;
+export const SIZE_TEXTURE_TILE = 256;
 
 function WMTS_Provider(options) {
     // Constructor

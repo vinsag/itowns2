@@ -16,6 +16,7 @@
 import Provider from './Provider';
 import Projection from '../../Geographic/Projection';
 import BuilderEllipsoidTile from '../../../Globe/BuilderEllipsoidTile';
+import { SIZE_TEXTURE_TILE } from './WMTS_Provider';
 import TileGeometry from '../../../Globe/TileGeometry';
 
 function TileProvider() {
@@ -49,7 +50,10 @@ TileProvider.prototype.executeCommand = function executeCommand(command) {
 
     tile.setUuid(this.nNode++);
     tile.link = parent.link;
-    tile.geometricError = Math.pow(2, (18 - params.level));
+
+    // The geometric error is calculated to have a correct texture display.
+    // For the projection of a texture's texel to be less than or equal to one pixel
+    tile.geometricError = tile.geometry.boundingSphere.radius / SIZE_TEXTURE_TILE;
 
     parent.worldToLocal(params.center);
 
