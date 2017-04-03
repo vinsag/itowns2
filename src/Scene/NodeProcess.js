@@ -115,11 +115,13 @@ NodeProcess.prototype.subdivideNode = function subdivideNode(node, camera, param
                     }
                 }
 
-                // update Imagery wmts
+                // update elevation wmts
                 const elevationLayers = params.layersConfig.getElevationLayers();
                 let canHaveElevation = false;
                 for (const layer of elevationLayers) {
-                    canHaveElevation |= layer.tileInsideLimit(child, layer);
+                    // WAIT TODO remove ancestor
+                    // canHaveElevation |= layer.tileInsideLimit(child, layer);
+                    canHaveElevation |= layer.zoom.min <= child.level;
                 }
 
                 child.setColorLayerParameters(paramMaterial, params.layersConfig.lightingLayers[0]);
@@ -357,7 +359,9 @@ function updateNodeElevation(scene, quadtree, node, layersConfig, force) {
     for (let i = elevationLayers.length - 1; i >= 0; i--) {
         const layer = elevationLayers[i];
 
-        if (!layer.tileInsideLimit(node, layer)) {
+        // TODO WAIT REMOVE ancestor
+        // if (!layer.tileInsideLimit(node, layer)) {
+        if (!(layer.zoom.min <= node.level)) {
             continue;
         }
 

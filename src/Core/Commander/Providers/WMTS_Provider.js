@@ -258,7 +258,26 @@ WMTS_Provider.prototype.tileInsideLimit = function tileInsideLimit(tile, layer) 
     // This layer provides data starting at level = layer.zoom.min
     // (the zoom.max property is used when building the url to make
     //  sure we don't use invalid levels)
-    return layer.zoom.min <= tile.level;
+
+    computeTileWMTSCoordinates(tile, layer, this.projection);
+
+    const coords = tile.wmtsCoords[layer.options.tileMatrixSet][0];
+
+    if (coords) {
+        const limits = layer.options.tileMatrixSetLimits[coords.zoom];
+
+        if (limits) {
+            if (coords.row <= limits.maxTileRow && coords.row >= limits.minTileRow && coords.col <= limits.maxTileCol && coords.col >= limits.minTileCol) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    return false;
+
+    // return layer.zoom.min <= tile.level;
 };
 
 WMTS_Provider.prototype.getColorTextures = function getColorTextures(tile, layer, parameters) {
