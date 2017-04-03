@@ -13,7 +13,7 @@ import TileMesh from './TileMesh';
 import Atmosphere from './Atmosphere';
 import Clouds from './Clouds';
 import Capabilities from '../Core/System/Capabilities';
-import Coordinates, { UNIT } from '../Core/Geographic/Coordinates';
+import Coordinates, { UNIT, ellipsoidSizes } from '../Core/Geographic/Coordinates';
 import BasicMaterial from '../Renderer/BasicMaterial';
 import LayersConfiguration from '../Scene/LayersConfiguration';
 import { SSE_SUBDIVISION_THRESHOLD } from '../Scene/NodeProcess';
@@ -219,14 +219,38 @@ Globe.prototype.getZoomLevelFromIdnode = function getZoomLevelFromIdnode(id) {
     return cO();
 };
 
+Globe.prototype.computeTheoricalZoom = function computeTheoricalZoom(camera, distance) {
+    const sizeTexture = 256;
+    const sizeEllipsoid = ellipsoidSizes().x;
+    const preSinus = sizeTexture * (SSE_SUBDIVISION_THRESHOLD * 0.5) / camera.preSSE / sizeEllipsoid;
+
+    let sinus = distance * preSinus;
+    let zoom = Math.log(Math.PI / (2.0 * Math.asin(sinus))) / Math.log(2);
+
+    const delta = Math.PI / Math.pow(2, zoom);
+    const chord = 2.0 * sizeEllipsoid * Math.sin(delta * 0.5);
+    const radius = chord * 0.5;
+
+    // adjust with bounding sphere rayon
+    sinus = (distance - radius) * preSinus;
+    zoom = Math.log(Math.PI / (2.0 * Math.asin(sinus))) / Math.log(2);
+
+    if (isNaN(zoom)) {
+        return 0;
+    } else {
+        return Math.round(zoom);
+    }
+};
 
 Globe.prototype.computeDistanceForZoomLevel = function computeDistanceForZoomLevel(zoom, camera) {
-    const delta = Math.PI / Math.pow(2, zoom - 1);
-    const chord = 2.0 * 6378137 * Math.sin(delta * 0.5);
+    const sizeTexture = 256;
+    const sizeEllipsoid = ellipsoidSizes().x;
+    const delta = Math.PI / Math.pow(2, zoom);
+    const chord = 2.0 * sizeEllipsoid * Math.sin(delta * 0.5);
     const radius = chord * 0.5;
-    const error = radius / 256;
-    // return camera.preSSE * Math.pow(this.tiles.minLevel, (this.tiles.maxLevel - zoom + 1)) / SSE_SUBDIVISION_THRESHOLD;
-    return camera.preSSE * error / SSE_SUBDIVISION_THRESHOLD;
+    const error = radius / sizeTexture;
+
+    return camera.preSSE * error / (SSE_SUBDIVISION_THRESHOLD * 0.5) + radius;
 };
 
 Globe.prototype.getTile = function getTile(coordinate) {

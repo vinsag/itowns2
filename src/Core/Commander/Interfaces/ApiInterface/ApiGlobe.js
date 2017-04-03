@@ -697,8 +697,10 @@ ApiGlobe.prototype.pan = function pan(pVector) {
  * @return     {number}  The zoom level.
  */
 ApiGlobe.prototype.getZoomLevel = function getZoomLevel() {
-    const idNode = this.scene.gfxEngine.screenCoordsToNodeId();
-    return this.scene.getMap().getZoomLevelFromIdnode(idNode);
+    const theoricalZoom = this.scene.getMap().computeTheoricalZoom(this.scene.currentCamera(), this.getRange());
+    // const idNode = this.scene.gfxEngine.screenCoordsToNodeId();
+    // const realZoom = this.scene.getMap().getZoomLevelFromIdnode(idNode);
+    return theoricalZoom;
 };
 
 /**
@@ -711,8 +713,6 @@ ApiGlobe.prototype.getZoomLevel = function getZoomLevel() {
  * @return     {Promise}
  */
 ApiGlobe.prototype.setZoomLevel = function setZoomLevel(zoom, isAnimated) {
-    zoom = Math.max(this.getMinZoomLevel(), zoom);
-    zoom = Math.min(this.getMaxZoomLevel(), zoom);
     const distance = this.scene.getMap().computeDistanceForZoomLevel(zoom, this.scene.currentCamera());
     return this.setRange(distance, isAnimated);
 };
