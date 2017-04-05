@@ -161,7 +161,7 @@ function c3DEngine(scene, positionCamera, viewerDiv, debugMode, gLDebug) {
     this.controls.rotateSpeed = 0.25;
     this.controls.zoomSpeed = 2.0;
     this.controls.minDistance = 30;
-    this.controls.maxDistance = this.size * 8.0;
+    this.controls.maxDistance = this.size * 9.5;
     this.camera.update();
 
     var gl = this.renderer.context;
