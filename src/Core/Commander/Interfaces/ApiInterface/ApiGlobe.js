@@ -16,7 +16,8 @@ import Fetcher from '../../Providers/Fetcher';
 import { STRATEGY_MIN_NETWORK_TRAFFIC } from '../../../../Scene/LayerUpdateStrategy';
 
 var sceneIsLoaded = false;
-var eventLoaded = new CustomEvent('globe-loaded');
+var eventLoaded = new CustomEvent('dataloaded');
+var eventInitialized = new CustomEvent('initialized');
 var eventRange = new CustomEvent('rangeChanged');
 var eventOrientation = new CustomEvent('orientationchanged');
 var eventPan = new CustomEvent('panchanged');
@@ -26,7 +27,6 @@ var eventLayerChanged = new CustomEvent('layerchanged');
 var eventLayerChangedVisible = new CustomEvent('layerchanged:visible');
 var eventLayerChangedOpacity = new CustomEvent('layerchanged:opacity');
 var eventLayerChangedIndex = new CustomEvent('layerchanged:index');
-var eventError = new CustomEvent('error');
 
 var enableAnimation = false;
 
@@ -322,13 +322,9 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(coordCarto, view
     this.viewerDiv = viewerDiv;
 
     viewerDiv.addEventListener('globe-built', () => {
-        if (sceneIsLoaded === false) {
+        if (!sceneIsLoaded) {
             sceneIsLoaded = true;
-            this.scene.currentControls().updateCameraTransformation();
-            this.scene.updateScene3D();
             viewerDiv.dispatchEvent(eventLoaded);
-        } else {
-            viewerDiv.dispatchEvent(eventError);
         }
     }, false);
 
@@ -356,9 +352,15 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(coordCarto, view
     this.scene.scheduler.addProtocolProvider('wms', new WMS_Provider({ support: map.gLDebug }));
 
     this.sceneLoadedDeferred = defer();
-    this.addEventListener('globe-loaded', () => {
+    this.addEventListener('dataloaded', () => {
         this.sceneLoadedDeferred.resolve();
         this.sceneLoadedDeferred = defer();
+    });
+
+    this.setSceneLoaded().then(() => {
+        this.scene.currentControls().updateCameraTransformation();
+        this.scene.updateScene3D();
+        viewerDiv.dispatchEvent(eventInitialized);
     });
 
     return this.scene;
