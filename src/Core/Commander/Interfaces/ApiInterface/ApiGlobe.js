@@ -26,7 +26,6 @@ var eventLayerChanged = new CustomEvent('layerchanged');
 var eventLayerChangedVisible = new CustomEvent('layerchanged:visible');
 var eventLayerChangedOpacity = new CustomEvent('layerchanged:opacity');
 var eventLayerChangedIndex = new CustomEvent('layerchanged:index');
-var eventError = new CustomEvent('error');
 
 var enableAnimation = false;
 
@@ -322,13 +321,9 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(coordCarto, view
     this.viewerDiv = viewerDiv;
 
     viewerDiv.addEventListener('globe-built', () => {
-        if (sceneIsLoaded === false) {
+        if (!sceneIsLoaded) {
             sceneIsLoaded = true;
-            this.scene.currentControls().updateCameraTransformation();
-            this.scene.updateScene3D();
             viewerDiv.dispatchEvent(eventLoaded);
-        } else {
-            viewerDiv.dispatchEvent(eventError);
         }
     }, false);
 
@@ -359,6 +354,11 @@ ApiGlobe.prototype.createSceneGlobe = function createSceneGlobe(coordCarto, view
     this.addEventListener('globe-loaded', () => {
         this.sceneLoadedDeferred.resolve();
         this.sceneLoadedDeferred = defer();
+    });
+
+    this.setSceneLoaded().then(() => {
+        this.scene.currentControls().updateCameraTransformation();
+        this.scene.updateScene3D();
     });
 
     return this.scene;
