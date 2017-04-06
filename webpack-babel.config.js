@@ -6,14 +6,14 @@ module.exports = {
         umdNamedDefine: true,
     },
     module: {
-        loaders: [
+        rules: [
             // please consider modifying corresponding loaders in webpack.config.js too
             {
                 test: /\.glsl$/,
                 include: [
                     path.resolve(__dirname, 'src'),
                 ],
-                loader: 'raw',
+                loader: 'raw-loader',
             },
         ],
     },
