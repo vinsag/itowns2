@@ -767,6 +767,10 @@ ApiGlobe.prototype.getZoomScale = function getZoomScale(pitch) {
         projection = 2.0 * rayon * Math.sin(phi + alpha);
     }
 
+    // More simple compute
+    // const unitProjection = camera.height / (2 * range * Math.tan(alpha));
+    // const simpleZoomScale= pitch * unitProjection;
+
     const zoomScale = camera.height * pitch / projection;
 
     return zoomScale;
