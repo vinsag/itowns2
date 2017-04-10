@@ -97,10 +97,49 @@ ApiGlobe.prototype.addGeometryLayer = function addGeometryLayer(layer) {
 };
 
 /**
- * This function adds an imagery layer to the scene. The layer id must be unique. The protocol rules wich parameters are then needed for the function.
- * @constructor
- * @param {Layer} layer.
+ * The intellectual property rights
+ * @typedef {Object} Attribution
+ * @property {String} name
+ * @property {String} url
  */
+
+/**
+ * Options to wms protocol
+ * @typedef {Object} options_wms
+ * @property {Attribution} attribution The intellectual property rights for the layer
+ * @property {String} name
+ * @property {String} mimetype
+ */
+
+/**
+ * Options to wtms protocol
+ * @typedef {Object} options_wmts
+ * @property {Attribution} attribution The intellectual property rights for the layer
+ * @property {String} name
+ * @property {String} mimetype
+ * @property {String} tileMatrixSet
+ * @property {Array.<Object>} tileMatrixSetLimits The limits for the tile matrix set
+ * @property {Number} tileMatrixSetLimits.minTileRow Minimum row for tiles at the level
+ * @property {Number} tileMatrixSetLimits.maxTileRow Maximum row for tiles at the level
+ * @property {Number} tileMatrixSetLimits.minTileCol Minimum col for tiles at the level
+ * @property {Number} tileMatrixSetLimits.maxTileCol Maximum col for tiles at the level
+ * @property {Object} [zoom]
+ * @property {Object} [zoom.min] layer's zoom minimum
+ * @property {Object} [zoom.max] layer's zoom maximum
+ */
+
+/**
+ * This function adds an imagery layer to the scene. The layer id must be unique.
+ * The protocol rules wich parameters are then needed for the function.
+ * @constructor
+ * @param {Layer} layer
+ * @param {String} id Unique layer's id
+ * @param {string} layer.protocol wmts and wms (wmtsc for custom deprecated)
+ * @param {string} layer.url Base URL of the repository or of the file(s) to load
+ * @param {Object} layer.updateStrategy strategy to load imagery files
+ * @param {options_wmts|options_wms} layer.options WMTS or WMS options
+ */
+
 ApiGlobe.prototype.addImageryLayer = function addImageryLayer(layer) {
     preprocessLayer(layer, this.scene.scheduler.getProtocolProvider(layer.protocol));
     const map = this.scene.getMap();
@@ -195,7 +234,12 @@ ApiGlobe.prototype.removeImageryLayer = function removeImageryLayer(id) {
  * The layer id must be unique amongst all layers already inserted.
  * The protocol rules which parameters are then needed for the function.
  * @constructor
- * @param {Layer} layer.
+ * @param {Layer} layer
+ * @param {String} id Unique layer's id
+ * @param {string} layer.protocol wmts and wms (wmtsc for custom deprecated)
+ * @param {string} layer.url Base URL of the repository or of the file(s) to load
+ * @param {Object} layer.updateStrategy strategy to load imagery files
+ * @param {options_wmts|options_wms} layer.options WMTS or WMS options
  */
 
 ApiGlobe.prototype.addElevationLayer = function addElevationLayer(layer) {
