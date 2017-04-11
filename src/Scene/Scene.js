@@ -39,11 +39,16 @@ const RENDERING_ACTIVE = 1;
  * - remove debug boolean, replace by if __DEBUG__ and checkboxes in debug UI
  * - Scene (and subobjects) should be instanciable several times.
  */
-function Scene(crs, positionCamera, viewerDiv, debugMode, gLDebug) {
+function Scene(crs, coordinate, viewerDiv, debugMode, gLDebug) {
     if (instanceScene !== null) {
         throw new Error('Cannot instantiate more than one Scene');
     }
     this.referenceCrs = crs;
+
+    const positionCamera = coordinate.as(crs);
+    const coordinateTargetCamera = coordinate.clone();
+    coordinateTargetCamera._values[2] = 0;
+    const positionTargetCamera = coordinateTargetCamera.as(crs);
 
     this.layers = [];
     this.map = null;
@@ -56,7 +61,7 @@ function Scene(crs, positionCamera, viewerDiv, debugMode, gLDebug) {
     this.stylesManager = new StyleManager();
 
     this.gLDebug = gLDebug;
-    this.gfxEngine = c3DEngine(this, positionCamera.as(crs).xyz(), viewerDiv, debugMode, gLDebug);
+    this.gfxEngine = c3DEngine(this, positionCamera.xyz(), positionTargetCamera.xyz(), viewerDiv, debugMode, gLDebug);
     this.browserScene = new BrowseTree(this.gfxEngine);
 
     this.needsRedraw = false;

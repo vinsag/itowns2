@@ -15,7 +15,7 @@ import RendererConstant from './RendererConstant';
 
 var instance3DEngine = null;
 
-function c3DEngine(scene, positionCamera, viewerDiv, debugMode, gLDebug) {
+function c3DEngine(scene, positionCamera, targetCamera, viewerDiv, debugMode, gLDebug) {
     // Constructor
 
     if (instance3DEngine !== null) {
@@ -157,7 +157,7 @@ function c3DEngine(scene, positionCamera, viewerDiv, debugMode, gLDebug) {
     //
     // Create Control
     //
-    this.controls = new GlobeControls(this.camera.camera3D, this.renderer.domElement, this);
+    this.controls = new GlobeControls(this.camera.camera3D, targetCamera, this.renderer.domElement, this);
     this.controls.rotateSpeed = 0.25;
     this.controls.zoomSpeed = 2.0;
     this.controls.minDistance = 30;
