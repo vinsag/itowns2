@@ -5,6 +5,8 @@
  *
  */
 
+import * as THREE from 'three';
+
 /**
  *
  * @param {type} Node
@@ -28,7 +30,7 @@ function LayersConfiguration() {
     // layers state (visibility, opacity)
     this.layersState = {};
 }
-
+LayersConfiguration.prototype = Object.create(THREE.EventDispatcher.prototype);
 LayersConfiguration.prototype.constructor = LayersConfiguration;
 
 function defaultState(seq) {
@@ -49,21 +51,37 @@ function defaultState(seq) {
 LayersConfiguration.prototype.addElevationLayer = function addElevationLayer(layer) {
     this.elevationLayers.push(layer);
     this.layersState[layer.id] = defaultState();
+    this.dispatchEvent({
+        type: 'layeradded',
+        layerId: layer.id,
+    });
 };
 
 LayersConfiguration.prototype.addColorLayer = function addColorLayer(layer) {
     this.colorLayers.push(layer);
     this.layersState[layer.id] = defaultState(this.colorLayers.length - 1);
+    this.dispatchEvent({
+        type: 'layeradded',
+        layerId: layer.id,
+    });
 };
 
 LayersConfiguration.prototype.addGeometryLayer = function addGeometryLayer(layer) {
     this.geometryLayers.push(layer);
     this.layersState[layer.id] = defaultState();
+    this.dispatchEvent({
+        type: 'layeradded',
+        layerId: layer.id,
+    });
 };
 
 LayersConfiguration.prototype.removeColorLayer = function removeColorLayer(id) {
     if (this.layersState[id]) {
         this.colorLayers = this.colorLayers.filter(l => l.id != id);
+        this.dispatchEvent({
+            type: 'layerremoved',
+            layerId: id,
+        });
         delete this.layersState[id];
         return true;
     }
@@ -90,15 +108,43 @@ LayersConfiguration.prototype.getElevationLayers = function getElevationLayers()
     return this.elevationLayers;
 };
 
+LayersConfiguration.prototype.dispatchLayerEvent = function dispatchLayerEvent(id, eventname, oldvalue, func) {
+    this.dispatchEvent({
+        type: eventname,
+        layerid: id,
+        old: oldvalue,
+        new: func,
+    });
+};
+
+LayersConfiguration.prototype.dispatchEventLayerChanged = function dispatchEventLayerChanged(id, oldindex, oldopacity, oldvisibility) {
+    this.dispatchEvent({
+        type: 'layerchanged',
+        layerId: id,
+        oldIndex: oldindex,
+        newIndex: this.layersState[id].sequence,
+        oldOpacity: oldopacity,
+        newOpacity: this.layersState[id].opacity,
+        oldVisibility: oldvisibility,
+        newVisibility: this.layersState[id].visible,
+    });
+};
+
 LayersConfiguration.prototype.setLayerOpacity = function setLayerOpacity(id, opacity) {
     if (this.layersState[id]) {
+        const oldOpacity = this.layersState[id].opacity;
         this.layersState[id].opacity = opacity;
+        this.dispatchLayerEvent(id, 'layerchanged:opacity', oldOpacity, this.layersState[id].opacity);
+        this.dispatchEventLayerChanged(id, this.layersState[id].sequence, oldOpacity, this.layersState[id].visible);
     }
 };
 
 LayersConfiguration.prototype.setLayerVisibility = function setLayerVisibility(id, visible) {
     if (this.layersState[id]) {
+        const oldVisibility = this.layersState[id].visible;
         this.layersState[id].visible = visible;
+        this.dispatchLayerEvent(id, 'layerchanged:visible', oldVisibility, this.layersState[id].visible);
+        this.dispatchEventLayerChanged(id, this.layersState[id].sequence, this.layersState[id].opacity, oldVisibility);
     }
 };
 
@@ -123,13 +169,15 @@ LayersConfiguration.prototype.isLayerFrozen = function isLayerFrozen(id) {
 
 LayersConfiguration.prototype.moveLayerToIndex = function moveLayerToIndex(id, newIndex) {
     if (this.layersState[id]) {
-        var oldIndex = this.layersState[id].sequence;
+        const oldIndex = this.layersState[id].sequence;
         for (var i in this.layersState) {
             if (Object.prototype.hasOwnProperty.call(this.layersState, i)) {
                 var state = this.layersState[i];
                 if (state.sequence === newIndex) {
                     state.sequence = oldIndex;
                     this.layersState[id].sequence = newIndex;
+                    this.dispatchLayerEvent(id, 'layerchanged:index', oldIndex, this.layersState[id].sequence);
+                    this.dispatchEventLayerChanged(id, oldIndex, this.layersState[id].opacity, this.layersState[id].visible);
                     break;
                 }
             }

@@ -13,11 +13,7 @@ import AnimationPlayer, { Animation, AnimatedExpression } from '../../Scene/Anim
 import { C } from '../../Core/Geographic/Coordinates';
 
 var selectClick = new CustomEvent('selectClick');
-var eventAnimationStarted = new CustomEvent('animationstarted');
-var eventAnimationStopped = new CustomEvent('animationstopped');
-var eventCenter = new CustomEvent('centercontrolchanged');
 var eventZoomChanged = new CustomEvent('zoomcontrolchanged');
-var eventOrientationChanged = new CustomEvent('orientationcontrolchanged');
 
 // TODO:
 // Recast touch for globe
@@ -201,6 +197,9 @@ const lastQuaternion = new THREE.Quaternion();
 
 // State control
 var state = CONTROL_STATE.NONE;
+
+// Initial Orientation
+var sphe;
 
 // Initial transformation
 var initialTarget;
@@ -445,6 +444,9 @@ function GlobeControls(camera, domElement, engine) {
             // console.warn('WARNING: GlobeControls.js encountered an unknown camera type - this.mouseToPan disabled.');
 
         }
+        this.dispatchEvent({
+            type: 'panchanged',
+        });
     };
 
     this.dollyIn = function dollyIn(dollyScale) {
@@ -648,6 +650,8 @@ function GlobeControls(camera, domElement, engine) {
     };
 
     const cT = new THREE.Vector3();
+    const deltaOri = 0.000001;
+    const deltaCenter = 1;
 
     const updateCameraTargetOnGlobe = function updateCameraTargetOnGlobe() {
         const oldCoord = C.fromXYZ(scene.referenceCrs, cameraTargetOnGlobe.position);
@@ -658,15 +662,6 @@ function GlobeControls(camera, domElement, engine) {
         if (!pickingPosition) {
             return;
         }
-
-        var targt = {};
-        targt.x = globeTarget.position.x;
-        targt.y = globeTarget.position.y;
-
-        var sphe = {};
-        sphe.phi = spherical.phi;
-        sphe.phi = spherical.phi;
-        sphe.radius = spherical.radius;
 
         const distanceTarget = pickingPosition.distanceTo(this.camera.position);
 
@@ -684,11 +679,25 @@ function GlobeControls(camera, domElement, engine) {
         state = CONTROL_STATE.NONE;
         lastRotation = [];
 
-        this.dispatchEvent({
-            type: 'camera-target-updated',
-            oldCameraTargetPosition: oldCoord,
-            newCameraTargetPosition: C.fromXYZ(scene.referenceCrs, cameraTargetOnGlobe.position),
-        });
+        const newCoord = C.fromXYZ(scene.referenceCrs, cameraTargetOnGlobe.position);
+
+        if (Math.abs(oldCoord.x() - newCoord.x()) > deltaCenter || Math.abs(oldCoord.z() - newCoord.z()) > deltaCenter) {
+            this.dispatchEvent({
+                type: 'camera-target-updated',
+                oldCameraTargetPosition: oldCoord,
+                newCameraTargetPosition: newCoord,
+            });
+        }
+
+        if (Math.abs(sphe.phi - spherical.phi) > deltaOri || Math.abs(sphe.theta - spherical.theta) > deltaOri) {
+            this.dispatchEvent({
+                type: 'orientationchanged',
+                oldTilt: sphe.phi * 180 / Math.PI,
+                newTilt: spherical.phi * 180 / Math.PI,
+                oldHeading: sphe.theta * 180 / Math.PI,
+                newHeading: spherical.theta * 180 / Math.PI,
+            });
+        }
     };
 
     // Update helper
@@ -817,6 +826,7 @@ function GlobeControls(camera, domElement, engine) {
 
                 if (keyCtrl) {
                     state = CONTROL_STATE.ORBIT;
+                    sphe = spherical.clone();
                 } else if (keyShift) {
                     state = CONTROL_STATE.PANORAMIC;
                 } else if (keyS) {
@@ -908,6 +918,7 @@ function GlobeControls(camera, domElement, engine) {
     };
 
     var onMouseWheel = function onMouseWheel(event) {
+        // const oldZoom = Globe.getZoomLevel();
         player.stop().then(() => {
             if (this.enabled === false || this.enableZoom === false/* || state !== CONTROL_STATE.NONE*/) return;
 
@@ -1147,6 +1158,9 @@ function GlobeControls(camera, domElement, engine) {
         const bkDamping = this.enableDamping;
         this.enableDamping = false;
         state = controlState || CONTROL_STATE.ORBIT;
+        if (state === CONTROL_STATE.ORBIT) {
+            sphe = spherical.clone();
+        }
         update();
         updateCameraTargetOnGlobe.bind(this)();
         this.enableDamping = bkDamping;
@@ -1232,8 +1246,15 @@ GlobeControls.prototype.setHeading = function setHeading(heading, isAnimated) {
 };
 
 GlobeControls.prototype.setRange = function setRange(pRange, isAnimated) {
+    const oldRange = this.getRange();
     const deltaRange = pRange - this.getRange();
-    return this.moveOrbitalPosition(deltaRange, 0, 0, isAnimated);
+    return this.moveOrbitalPosition(deltaRange, 0, 0, isAnimated).then(() => {
+        this.dispatchEvent({
+            type: 'rangechanged',
+            old: oldRange,
+            new: this.getRange(),
+        });
+    });
 };
 
 GlobeControls.prototype.setOrbitalPosition = function setOrbitalPosition(range, heading, tilt, isAnimated) {
@@ -1245,23 +1266,30 @@ GlobeControls.prototype.setOrbitalPosition = function setOrbitalPosition(range, 
 
 const destSpherical = new THREE.Spherical();
 
+GlobeControls.prototype.dispatchAnimationEvent = function dispatchAnimationEvent(eventname) {
+    this.dispatchEvent({
+        type: eventname,
+    });
+};
+
 GlobeControls.prototype.moveOrbitalPosition = function moveOrbitalPositionfunction(deltaRange, deltaTheta, deltaPhi, isAnimated) {
     const range = deltaRange + this.getRange();
     if (isAnimated) {
-        this.domElement.parentNode.dispatchEvent(eventAnimationStarted);
+        this.dispatchAnimationEvent('animationstarted');
         destSpherical.theta = deltaTheta + spherical.theta;
         destSpherical.phi = deltaPhi + spherical.phi;
         sphericalTo.radius = range;
         sphericalTo.theta = deltaTheta / (animationOrbit.duration - 1);
         sphericalTo.phi = deltaPhi / (animationOrbit.duration - 1);
         state = CONTROL_STATE.ORBIT;
+        sphe = spherical.clone();
         return player.play(animationOrbit).then(() => {
             // To correct errors at animation's end
             if (player.isEnded()) {
                 this.moveOrbitalPosition(0, destSpherical.theta - spherical.theta, destSpherical.phi - spherical.phi);
-                this.domElement.parentNode.dispatchEvent(eventAnimationStopped);
+                this.dispatchAnimationEvent('animationstopped');
             } else if (player.isStopped()) {
-                this.domElement.parentNode.dispatchEvent(eventAnimationStopped);
+                this.dispatchAnimationEvent('animationstopped');
             }
             this.resetControls();
         });
@@ -1302,7 +1330,7 @@ GlobeControls.prototype.setCameraTargetPosition = function setCameraTargetPositi
     const vTo = position.normalize();
 
     if (isAnimated) {
-        this.domElement.parentNode.dispatchEvent(eventAnimationStarted);
+        this.dispatchAnimationEvent('animationstarted');
         ctrl.qDelta.setFromUnitVectors(vFrom, vTo);
         if (position.range) {
             animatedScale = 1.0 - position.range / this.getRange();
@@ -1310,10 +1338,10 @@ GlobeControls.prototype.setCameraTargetPosition = function setCameraTargetPositi
         state = CONTROL_STATE.MOVE_GLOBE;
         return player.play(animationZoomCenter).then(() => {
             if (player.isEnded()) {
-                this.domElement.parentNode.dispatchEvent(eventAnimationStopped);
+                this.dispatchAnimationEvent('animationstopped');
                 this.domElement.parentNode.dispatchEvent(eventZoomChanged);
             } else if (player.isStopped()) {
-                this.domElement.parentNode.dispatchEvent(eventAnimationStopped);
+                this.dispatchAnimationEvent('animationstopped');
                 this.domElement.parentNode.dispatchEvent(eventZoomChanged);
             }
             animatedScale = 0.0;
