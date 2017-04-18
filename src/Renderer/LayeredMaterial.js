@@ -405,14 +405,6 @@ LayeredMaterial.prototype.getElevationLayerLevel = function getElevationLayerLev
     return this.textures[l_ELEVATION][0].coordWMTS.zoom;
 };
 
-LayeredMaterial.prototype.getLayerLevel = function getLayerLevel(layerType, layerId) {
-    if (layerType == l_ELEVATION) {
-        return this.getElevationLayerLevel();
-    } else {
-        return this.getColorLayerLevelById(layerId);
-    }
-};
-
 LayeredMaterial.prototype.getLayerTextures = function getLayerTextures(layerType, layerId) {
     if (layerType === l_ELEVATION) {
         return this.textures[l_ELEVATION];

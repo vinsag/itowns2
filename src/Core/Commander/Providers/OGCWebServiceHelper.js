@@ -67,13 +67,13 @@ export default {
             return result;
         });
     },
-    computeTileMatrixSetCoordinates(tile, wmtsLayer) {
+    computeTileMatrixSetCoordinates(tile, layer) {
         // Are WMTS coordinates ready?
         if (!tile.wmtsCoords) {
             tile.wmtsCoords = {};
         }
 
-        const tileMatrixSet = wmtsLayer.options.tileMatrixSet || 'WGS84G';
+        const tileMatrixSet = layer.options.tileMatrixSet || 'WGS84G';
         if (!(tileMatrixSet in tile.wmtsCoords)) {
             const tileCoord = projection.WGS84toWMTS(tile.bbox);
 

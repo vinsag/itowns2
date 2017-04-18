@@ -87,11 +87,11 @@ WMTS_Provider.prototype.url = function url(coWMTS, layer) {
  * @returns {WMTS_Provider_L15.WMTS_Provider.prototype@pro;_IoDriver@call;read@call;then}
  */
 WMTS_Provider.prototype.getXbilTexture = function getXbilTexture(tile, layer, parentTextures) {
-    let coordWMTS = tile.wmtsCoords[layer.options.tileMatrixSet][0];
+    const coordWMTS = tile.wmtsCoords[layer.options.tileMatrixSet][0];
     const pitch = new THREE.Vector3(0.0, 0.0, 1.0);
 
     if (parentTextures) {
-        coordWMTS = WMTS_WGS84Parent(
+        WMTS_WGS84Parent(
             coordWMTS,
             parentTextures[0].coordWMTS.zoom,
             pitch);

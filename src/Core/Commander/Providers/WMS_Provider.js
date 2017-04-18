@@ -74,7 +74,6 @@ WMS_Provider.prototype.preprocessDataLayer = function preprocessDataLayer(layer)
     layer.version = layer.version || '1.3.0';
     layer.style = layer.style || '';
     layer.transparent = layer.transparent || false;
-    layer.options = {};
 
     layer.customUrl = `${layer.url
                   }?SERVICE=WMS&REQUEST=GetMap&LAYERS=${layer.name
